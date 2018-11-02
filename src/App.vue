@@ -46,8 +46,21 @@ export default {
                     target.row = unit.row
                     break
             }
+            if (this.outOfBounds(target)) {
+                return
+            }
             unit.row = target.row
             unit.column = target.column
+        },
+        outOfBounds(target) {
+            if (target.row > this.gameBoard.rows
+                || target.row <  1
+                || target.column > this.gameBoard.columns
+                || target.column <  1
+                ) {
+                return true;
+            }
+            return false;
         },
     },
     computed: {
