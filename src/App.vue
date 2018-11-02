@@ -1,26 +1,66 @@
 <template>
     <div id="app">
-        <div class="row" v-for="row in gameBoard.rows">
-            <game-tile v-for="column in gameBoard.columns" :row="row" :column="column" :gameBoard="gameBoard"></game-tile>
+        <div :style="boardStyle">
+            <div class="row" v-for="row in gameBoard.rows">
+                <game-tile v-for="column in gameBoard.columns" :row="row" :column="column" :gameBoard="gameBoard"></game-tile>
+            </div>
         </div>
-        <player color="green" :size="gameBoard.tileSize"  :row="1" :column="1"></player>
+        <unit :unit="units.green" :size="gameBoard.tileSize"></unit>
+        <button v-on:click="tryMoveUnit('green', 'up')">Up</button>
+        <button v-on:click="tryMoveUnit('green', 'down')">Down</button>
+        <button v-on:click="tryMoveUnit('green', 'left')">Left</button>
+        <button v-on:click="tryMoveUnit('green', 'right')">Right</button>
     </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import GameTile from './components/GameTile.vue'
-import Player from './components/Player.vue'
+import Unit from './components/Unit.vue'
 
 export default {
     name: 'app',
     components: {
         GameTile,
-        Player,
+        Unit,
+    },
+    methods: {
+        tryMoveUnit(color, direction) {
+            let unit = this.units[color];
+            let target = {};
+            switch(direction) {
+                case 'up':
+                    target.column = unit.column
+                    target.row = unit.row - 1
+                    break
+                case 'down':
+                    target.column = unit.column
+                    target.row = unit.row + 1
+                    break
+                case 'right':
+                    target.column = unit.column + 1
+                    target.row = unit.row
+                    break
+                case 'left':
+                    target.column = unit.column - 1
+                    target.row = unit.row
+                    break
+            }
+            unit.row = target.row
+            unit.column = target.column
+        },
     },
     computed: {
+        boardStyle() {
+            let style = {
+                'width': `${this.gameBoard.columns * this.gameBoard.tileSize}px`,
+                'height': `${this.gameBoard.rows * this.gameBoard.tileSize}px`,
+            }
+            return style
+        },
         ...mapState({
-            gameBoard: state => state.gameBoard
+            gameBoard: state => state.gameBoard,
+            units: state => state.units,
        })
     },
 }
