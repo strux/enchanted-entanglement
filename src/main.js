@@ -8,7 +8,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         game: {
-            state: 'play',
+            state: 'pending',
             timer: 30 * 1000,
         },
         gameBoard: {
@@ -50,7 +50,8 @@ const store = new Vuex.Store({
             return state.units.some(unit => unit.row === row && unit.column === column)
         },
         isOpenTile: (state, getters) => (row, column) => {
-            return getters.getTile(row, column) === 'open' &&
+            return getters.getTile(row, column) !== 'closed' &&
+                   getters.getTile(row, column) !== undefined &&
                    !getters.isUnitOnTile(row, column)
         },
         getBoardRows: state => {

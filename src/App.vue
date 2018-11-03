@@ -7,6 +7,9 @@
             <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
         </div>
         <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
+        <div :style="bannerStyle" v-if="game.state === 'pending'">
+            <button v-on:click="game.state = 'play'">Start Game</button>
+        </div>
     </div>
 </template>
 
@@ -27,14 +30,27 @@ export default {
     methods: {
     },
     computed: {
+        bannerStyle() {
+            let style = {
+                'width': `${this.columns * this.gameBoard.tileSize}px`,
+                'height': `${this.rows * this.gameBoard.tileSize}px`,
+                'background-color': 'grey',
+                'border': '1px solid black',
+                'position': 'absolute',
+                'top': 0,
+            }
+            return style
+        },
         boardStyle() {
             let style = {
                 'width': `${this.columns * this.gameBoard.tileSize}px`,
                 'height': `${this.rows * this.gameBoard.tileSize}px`,
+                'position': 'relative',
             }
             return style
         },
         ...mapState({
+            game: state => state.game,
             gameBoard: state => state.gameBoard,
             units: state => state.units,
        }),
