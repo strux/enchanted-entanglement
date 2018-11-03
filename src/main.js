@@ -21,18 +21,18 @@ const store = new Vuex.Store({
                 ['open','closed','open','open'],
             ],
         },
-        units: {
-            red: {
+        units: [
+            {
                 color: 'red',
                 row: 1,
                 column: 1,
             },
-            green: {
+            {
                 color: 'green',
                 row: 2,
                 column: 2,
             },
-        },
+        ],
     },
     mutations: {
         //increment: state => state.count++,
@@ -46,8 +46,12 @@ const store = new Vuex.Store({
                 return state.gameBoard.tiles[row][column]
             }
         },
-        isOpenTile: (state, getters) => (location) => {
-            return getters.getTile(location.row, location.column) === 'open'
+        isUnitOnTile: (state) => (row, column) => {
+            return state.units.some(unit => unit.row === row && unit.column === column)
+        },
+        isOpenTile: (state, getters) => (row, column) => {
+            return getters.getTile(row, column) === 'open' &&
+                   !getters.isUnitOnTile(row, column)
         },
         getBoardRows: state => {
             return state.gameBoard.tiles.length

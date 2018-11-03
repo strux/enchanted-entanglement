@@ -6,7 +6,7 @@
             </div>
             <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
         </div>
-        <unit-controls v-for="unit in units" :color="unit.color"></unit-controls>
+        <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
     </div>
 </template>
 
