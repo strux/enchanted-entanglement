@@ -1,0 +1,59 @@
+<template>
+    <div>
+        <button v-on:click="moveUnitRequest(color, 'up')" :disabled="game.state !== 'play'">Up</button>
+        <button v-on:click="moveUnitRequest(color, 'down')" :disabled="game.state !== 'play'">Down</button>
+        <button v-on:click="moveUnitRequest(color, 'left')" :disabled="game.state !== 'play'">Left</button>
+        <button v-on:click="moveUnitRequest(color, 'right')" :disabled="game.state !== 'play'">Right</button>
+    </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
+
+export default {
+    name: 'UnitControls',
+    props: ['color'],
+    methods: {
+        moveUnitRequest(color, direction) {
+            let unit = this.units[color];
+            let target = {};
+            switch(direction) {
+                case 'up':
+                    target.column = unit.column
+                    target.row = unit.row - 1
+                    break
+                case 'down':
+                    target.column = unit.column
+                    target.row = unit.row + 1
+                    break
+                case 'right':
+                    target.column = unit.column + 1
+                    target.row = unit.row
+                    break
+                case 'left':
+                    target.column = unit.column - 1
+                    target.row = unit.row
+                    break
+            }
+            if (this.isOpenTile(target)) {
+                unit.row = target.row
+                unit.column = target.column
+            }
+        },
+    },
+    computed: {
+        ...mapState({
+            game: state => state.game,
+            units: state => state.units,
+       }),
+       ...mapGetters({
+           isOpenTile: 'isOpenTile',
+       }),
+    },
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>

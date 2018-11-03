@@ -7,6 +7,10 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
     state: {
+        game: {
+            state: 'play',
+            timer: 30 * 1000,
+        },
         gameBoard: {
             tileSize: 50,
             rows: 4,
@@ -18,6 +22,11 @@ const store = new Vuex.Store({
             ],
         },
         units: {
+            red: {
+                color: 'red',
+                row: 1,
+                column: 1,
+            },
             green: {
                 color: 'green',
                 row: 2,
