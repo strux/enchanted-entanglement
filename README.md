@@ -1,4 +1,4 @@
-# mm-proto
+# enchanted-entanglement
 
 ## Project setup
 ```
