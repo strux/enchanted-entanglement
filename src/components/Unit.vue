@@ -7,25 +7,25 @@
 <script>
 export default {
     name: 'Unit',
-    props: ['unit', 'size'],
+    props: ['unit', 'tileSize'],
     computed: {
         containerStyle() {
             let style =  {
-                'width': `${this.size}px`,
-                'height': `${this.size}px`,
-                'top': `${((this.unit.row - 1) * this.size)}px`,
-                'left': `${((this.unit.column - 1) * this.size)}px`,
+                'width': `${this.tileSize}px`,
+                'height': `${this.tileSize}px`,
+                'top': `${((this.unit.row) * this.tileSize)}px`,
+                'left': `${((this.unit.column) * this.tileSize)}px`,
             }
             return style
         },
         style() {
-            let size = this.size * 0.8
+            let size = this.tileSize * 0.8
             let style =  {
                 'background-color': this.unit.color,
                 'width': `${size}px`,
                 'height': `${size}px`,
-                'top': `${(this.size - size) / 2}px`,
-                'left': `${(this.size - size) / 2}px`,
+                'top': `${(this.tileSize - size) / 2}px`,
+                'left': `${(this.tileSize - size) / 2}px`,
             }
             return style
         }

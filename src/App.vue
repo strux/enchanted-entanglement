@@ -1,15 +1,15 @@
 <template>
     <div id="app">
         <div :style="boardStyle">
-            <div class="row" v-for="row in gameBoard.rows">
-                <game-tile v-for="column in gameBoard.columns" :row="row" :column="column" :gameBoard="gameBoard"></game-tile>
+            <div class="row" v-for="(column, columnIndex) in gameBoard.tiles">
+                <game-tile v-for="(row, rowIndex) in column" :row="rowIndex" :column="columnIndex" :gameBoard="gameBoard"></game-tile>
             </div>
+            <unit :unit="units.green" :tileSize="gameBoard.tileSize"></unit>
         </div>
-        <unit :unit="units.green" :size="gameBoard.tileSize"></unit>
-        <button v-on:click="tryMoveUnit('green', 'up')">Up</button>
-        <button v-on:click="tryMoveUnit('green', 'down')">Down</button>
-        <button v-on:click="tryMoveUnit('green', 'left')">Left</button>
-        <button v-on:click="tryMoveUnit('green', 'right')">Right</button>
+        <button v-on:click="moveUnitRequest('green', 'up')">Up</button>
+        <button v-on:click="moveUnitRequest('green', 'down')">Down</button>
+        <button v-on:click="moveUnitRequest('green', 'left')">Left</button>
+        <button v-on:click="moveUnitRequest('green', 'right')">Right</button>
     </div>
 </template>
 
@@ -17,6 +17,7 @@
 import { mapState } from 'vuex'
 import GameTile from './components/GameTile.vue'
 import Unit from './components/Unit.vue'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'app',
@@ -25,7 +26,7 @@ export default {
         Unit,
     },
     methods: {
-        tryMoveUnit(color, direction) {
+        moveUnitRequest(color, direction) {
             let unit = this.units[color];
             let target = {};
             switch(direction) {
@@ -46,35 +47,38 @@ export default {
                     target.row = unit.row
                     break
             }
-            if (this.outOfBounds(target)) {
-                return
+            if (this.isOpenTile(target)) {
+                unit.row = target.row
+                unit.column = target.column
             }
-            unit.row = target.row
-            unit.column = target.column
         },
-        outOfBounds(target) {
-            if (target.row > this.gameBoard.rows
-                || target.row <  1
-                || target.column > this.gameBoard.columns
-                || target.column <  1
+        validTarget(target) {
+            if (typeof this.gameBoard.tiles[target.row] === 'undefined' ||
+                typeof this.gameBoard.tiles[target.row][target.column] === 'undefined' ||
+                this.gameBoard.tiles[target.row][target.column] === 'closed'
                 ) {
-                return true;
+                return false;
             }
-            return false;
+            return true;
         },
     },
     computed: {
         boardStyle() {
             let style = {
-                'width': `${this.gameBoard.columns * this.gameBoard.tileSize}px`,
-                'height': `${this.gameBoard.rows * this.gameBoard.tileSize}px`,
+                'width': `${this.columns * this.gameBoard.tileSize}px`,
+                'height': `${this.rows * this.gameBoard.tileSize}px`,
             }
             return style
         },
         ...mapState({
             gameBoard: state => state.gameBoard,
             units: state => state.units,
-       })
+       }),
+       ...mapGetters({
+           columns: 'getBoardColumns',
+           rows: 'getBoardRows',
+           isOpenTile: 'isOpenTile',
+       }),
     },
 }
 </script>

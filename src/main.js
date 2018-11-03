@@ -10,7 +10,12 @@ const store = new Vuex.Store({
         gameBoard: {
             tileSize: 50,
             rows: 4,
-            columns: 4,
+            tiles: [
+                ['closed','open','open','open'],
+                ['open','open','open','open'],
+                ['open','open','open','open'],
+                ['open','closed','open','open'],
+            ],
         },
         units: {
             green: {
@@ -22,6 +27,25 @@ const store = new Vuex.Store({
     },
     mutations: {
         //increment: state => state.count++,
+    },
+    getters: {
+        getTile: (state) => (row, column) => {
+            if (typeof state.gameBoard.tiles[row] === 'undefined' ||
+                typeof state.gameBoard.tiles[row][column] === 'undefined') {
+                return undefined
+            } else {
+                return state.gameBoard.tiles[row][column]
+            }
+        },
+        isOpenTile: (state, getters) => (location) => {
+            return getters.getTile(location.row, location.column) === 'open'
+        },
+        getBoardRows: state => {
+            return state.gameBoard.tiles.length
+        },
+        getBoardColumns: state => {
+            return state.gameBoard.tiles[0].length
+        },
     }
 })
 
