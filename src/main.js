@@ -13,29 +13,37 @@ const store = new Vuex.Store({
         },
         gameBoard: {
             tileSize: 50,
-            rows: 4,
-            tiles: [
-                ['closed','open','open','open'],
-                ['open','open','open','open'],
-                ['open','open','open','open'],
-                ['open','closed','open','open'],
-            ],
+            tiles: null,
         },
         units: [
             {
                 color: 'red',
                 row: 1,
                 column: 1,
+                canExit: true,
+                onExit: false,
             },
             {
                 color: 'green',
                 row: 2,
                 column: 2,
+                canExit: true,
+                onExit: false,
             },
         ],
     },
     mutations: {
-        //increment: state => state.count++,
+        createGameBoard (state, payload) {
+            let board = []
+            for (var x=0; x < payload.rows; x++) {
+                let row = [];
+                for (var y=0; y < payload.columns; y++) {
+                    row.push('open')
+                }
+                board.push(row)
+            }
+            state.gameBoard.tiles = board
+        },
     },
     getters: {
         getTile: (state) => (row, column) => {
@@ -60,7 +68,7 @@ const store = new Vuex.Store({
         getBoardColumns: state => {
             return state.gameBoard.tiles[0].length
         },
-    }
+    },
 })
 
 new Vue({

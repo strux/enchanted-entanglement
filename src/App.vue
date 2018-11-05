@@ -16,6 +16,7 @@
 <script>
 import { mapState } from 'vuex'
 import { mapGetters } from 'vuex'
+import { mapMutations } from 'vuex'
 import GameTile from './components/GameTile.vue'
 import Unit from './components/Unit.vue'
 import UnitControls from './components/UnitControls.vue'
@@ -28,6 +29,9 @@ export default {
         UnitControls,
     },
     methods: {
+    },
+    beforeCreate: function() {
+        this.$store.commit({ type:'createGameBoard', rows: 4, columns: 6 })
     },
     computed: {
         bannerStyle() {
@@ -57,6 +61,9 @@ export default {
        ...mapGetters({
            columns: 'getBoardColumns',
            rows: 'getBoardRows',
+       }),
+       ...mapMutations({
+           createGameBoard: 'createGameBoard',
        }),
     },
 }
