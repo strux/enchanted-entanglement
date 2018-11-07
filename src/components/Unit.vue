@@ -13,8 +13,8 @@ export default {
             let style =  {
                 'width': `${this.tileSize}px`,
                 'height': `${this.tileSize}px`,
-                'top': `${((this.unit.row) * this.tileSize)}px`,
-                'left': `${((this.unit.column) * this.tileSize)}px`,
+                'top': `${((Math.floor(this.unit.row / 2)) * this.tileSize)}px`,
+                'left': `${((Math.floor(this.unit.column / 2)) * this.tileSize)}px`,
             }
             return style
         },

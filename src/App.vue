@@ -31,7 +31,7 @@ export default {
     methods: {
     },
     beforeCreate: function() {
-        this.$store.commit({ type:'createGameBoard', rows: 4, columns: 6 })
+        //this.$store.commit({ type:'createGameBoard', rows: 4, columns: 6 })
     },
     computed: {
         bannerStyle() {

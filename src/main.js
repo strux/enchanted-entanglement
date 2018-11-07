@@ -5,6 +5,18 @@ import App from './App.vue'
 Vue.config.productionTip = false
 Vue.use(Vuex);
 
+const mapTiles = [
+    [1,1,1,1,1,1,1,1,1],
+    [1,0,0,0,1,0,0,0,1],
+    [1,1,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,1,1,1],
+]
+
 const store = new Vuex.Store({
     state: {
         game: {
@@ -13,20 +25,13 @@ const store = new Vuex.Store({
         },
         gameBoard: {
             tileSize: 50,
-            tiles: null,
+            tiles: mapTiles,
         },
         units: [
             {
                 color: 'red',
                 row: 1,
                 column: 1,
-                canExit: true,
-                onExit: false,
-            },
-            {
-                color: 'green',
-                row: 2,
-                column: 2,
                 canExit: true,
                 onExit: false,
             },
@@ -58,7 +63,7 @@ const store = new Vuex.Store({
             return state.units.some(unit => unit.row === row && unit.column === column)
         },
         isOpenTile: (state, getters) => (row, column) => {
-            return getters.getTile(row, column) !== 'closed' &&
+            return getters.getTile(row, column) !== 1 &&
                    getters.getTile(row, column) !== undefined &&
                    !getters.isUnitOnTile(row, column)
         },

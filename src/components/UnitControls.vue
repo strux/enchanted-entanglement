@@ -17,25 +17,35 @@ export default {
     methods: {
         moveUnitRequest(direction) {
             let target = {};
+            let wall = {};
             switch(direction) {
                 case 'up':
+                    wall.column = this.unit.column
+                    wall.row = this.unit.row - 1
                     target.column = this.unit.column
-                    target.row = this.unit.row - 1
+                    target.row = this.unit.row - 2
                     break
                 case 'down':
+                    wall.column = this.unit.column
+                    wall.row = this.unit.row + 1
                     target.column = this.unit.column
-                    target.row = this.unit.row + 1
+                    target.row = this.unit.row + 2
                     break
                 case 'right':
-                    target.column = this.unit.column + 1
+                    wall.column = this.unit.column + 1
+                    wall.row = this.unit.row
+                    target.column = this.unit.column + 2
                     target.row = this.unit.row
                     break
                 case 'left':
-                    target.column = this.unit.column - 1
+                    wall.column = this.unit.column - 1
+                    wall.row = this.unit.row
+                    target.column = this.unit.column - 2
                     target.row = this.unit.row
                     break
             }
-            if (this.isOpenTile(target.row, target.column)) {
+            if (this.isOpenTile(wall.row, wall.column) &&
+                this.isOpenTile(target.row, target.column)) {
                 this.unit.row = target.row
                 this.unit.column = target.column
             }
