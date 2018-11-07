@@ -3,9 +3,11 @@
 </template>
 
 <script>
+import mapConversions from '../mixins/MapConversions.js'
 export default {
     name: 'GameTile',
     props: ['gameBoard', 'row', 'column'],
+    mixins: [mapConversions],
     computed: {
         style() {
             if (!this.isWallCoord(this.row, this.column)) {
@@ -13,26 +15,33 @@ export default {
                 let style = {
                     'width': `${size}px`,
                     'height': `${size}px`,
-                    'left': `${((Math.floor(this.row/2)) * size)}px`,
-                    'top': `${((Math.floor(this.column/2)) * size)}px`,
-                    'background-color': 'gainsboro',
+                    'left': `${this.screenRow * size}px`,
+                    'top': `${this.screenColumn * size}px`,
+                    'background-color': this.backgroundColor,
                     'border-top': this.wallStyle('top'),
                     'border-bottom': this.wallStyle('bottom'),
                     'border-left': this.wallStyle('left'),
                     'border-right': this.wallStyle('right'),
                 }
-                /*
-                let obj = {}
-                ['top', 'bottom', 'left', 'right'].forEach((direction) => {
-                    if (this.neighborTile(direction) === 1) {
-                        obj[`border-${direction}`] = '2px solid black'
-                    }
-                }, this)
-                */
                 return style
             } else {
                 return { 'display': 'none' }
             }
+        },
+        backgroundColor() {
+            let color
+            switch(this.type) {
+                case 1:
+                    color = 'grey'
+                    break
+                case 2:
+                    color = 'lightcoral'
+                    break
+                default:
+                    color = 'gainsboro'
+                    break
+            }
+            return color
         },
         type() {
             return this.gameBoard.tiles[this.column][this.row]

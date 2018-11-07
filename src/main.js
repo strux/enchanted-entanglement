@@ -29,30 +29,32 @@ const mapTiles = [
     [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
     [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
+    [1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
 
-const store = new Vuex.Store({
-    state: {
-        game: {
-            state: 'play',
-            timer: 30 * 1000,
-        },
-        gameBoard: {
-            tileSize: 42,
-            tiles: mapTiles,
-        },
-        units: [
-            {
-                color: 'red',
-                row: 11,
-                column: 11,
-                canExit: true,
-                onExit: false,
-            },
-        ],
+const initialState = {
+    game: {
+        state: 'pending',
+        timer: 30 * 1000,
     },
+    gameBoard: {
+        tileSize: 42,
+        tiles: mapTiles,
+    },
+    units: [
+        {
+            color: 'red',
+            row: 11,
+            column: 11,
+            prizeGlyph: 2,
+            exitGlyph: 3,
+        },
+    ],
+}
+
+const store = new Vuex.Store({
+    state: initialState,
     mutations: {
         createGameBoard (state, payload) {
             let board = []
