@@ -10,6 +10,7 @@
         <div :style="bannerStyle" v-if="game.state === 'pending'">
             <button v-on:click="game.state = 'play'">Start Game</button>
         </div>
+        <timer v-if="game.state ==='play'" :starttime="game.timer" ></timer>
     </div>
 </template>
 
@@ -21,6 +22,7 @@ import GameTile from './components/GameTile.vue'
 import Unit from './components/Unit.vue'
 import UnitControls from './components/UnitControls.vue'
 import mapConversions from './mixins/MapConversions.js'
+import Timer from './components/Timer.vue'
 
 export default {
     name: 'app',
@@ -28,6 +30,7 @@ export default {
         GameTile,
         Unit,
         UnitControls,
+        Timer,
     },
     mixins: [mapConversions],
     methods: {
