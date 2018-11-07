@@ -20,6 +20,7 @@ import { mapMutations } from 'vuex'
 import GameTile from './components/GameTile.vue'
 import Unit from './components/Unit.vue'
 import UnitControls from './components/UnitControls.vue'
+import mapConversions from './mixins/MapToScreen.js'
 
 export default {
     name: 'app',
@@ -28,16 +29,23 @@ export default {
         Unit,
         UnitControls,
     },
+    mixins: [mapConversions],
     methods: {
     },
     beforeCreate: function() {
         //this.$store.commit({ type:'createGameBoard', rows: 4, columns: 6 })
     },
     computed: {
+        width () {
+            return this.columns
+        },
+        height () {
+            return this.rows
+        },
         bannerStyle() {
             let style = {
-                'width': `${this.columns * this.gameBoard.tileSize}px`,
-                'height': `${this.rows * this.gameBoard.tileSize}px`,
+                'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
+                'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
                 'background-color': 'grey',
                 'border': '1px solid black',
                 'position': 'absolute',
@@ -47,8 +55,8 @@ export default {
         },
         boardStyle() {
             let style = {
-                'width': `${this.columns * this.gameBoard.tileSize}px`,
-                'height': `${this.rows * this.gameBoard.tileSize}px`,
+                'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
+                'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
                 'position': 'relative',
             }
             return style

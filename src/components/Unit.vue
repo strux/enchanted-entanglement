@@ -5,16 +5,24 @@
 </template>
 
 <script>
+import mapConversions from '../mixins/MapToScreen.js'
 export default {
     name: 'Unit',
     props: ['unit', 'tileSize'],
+    mixins: [mapConversions],
     computed: {
+        row() {
+            return this.unit.row
+        },
+        column() {
+            return this.unit.column
+        },
         containerStyle() {
             let style =  {
                 'width': `${this.tileSize}px`,
                 'height': `${this.tileSize}px`,
-                'top': `${((Math.floor(this.unit.row / 2)) * this.tileSize)}px`,
-                'left': `${((Math.floor(this.unit.column / 2)) * this.tileSize)}px`,
+                'top': `${this.screenRow * this.tileSize}px`,
+                'left': `${this.screenColumn * this.tileSize}px`,
             }
             return style
         },
