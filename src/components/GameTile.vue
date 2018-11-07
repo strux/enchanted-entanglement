@@ -4,6 +4,8 @@
 
 <script>
 import mapConversions from '../mixins/MapConversions.js'
+import { mapGetters } from 'vuex'
+
 export default {
     name: 'GameTile',
     props: ['gameBoard', 'row', 'column', 'tile'],
@@ -15,8 +17,8 @@ export default {
                 let style = {
                     'width': `${size}px`,
                     'height': `${size}px`,
-                    'left': `${this.screenRow * size}px`,
-                    'top': `${this.screenColumn * size}px`,
+                    'left': `${this.screenColumn * size}px`,
+                    'top': `${this.screenRow * size}px`,
                     'background-color': this.tile.style['background-color'],
                     'border-top': this.wallStyle('top'),
                     'border-bottom': this.wallStyle('bottom'),
@@ -28,34 +30,15 @@ export default {
                 return { 'display': 'none' }
             }
         },
-        type() {
-            return this.gameBoard.tiles[this.column][this.row]
-        },
+       ...mapGetters(['getWall']),
     },
     methods: {
         isWallCoord(row, column) {
             return row % 2 === 0 || column % 2 === 0
         },
         wallStyle(direction) {
-            let style = '1px dashed lightgray'
-            let tile
-            switch(direction) {
-                case 'top':
-                    tile = this.gameBoard.tiles[this.column-1][this.row]
-                    break
-                case 'bottom':
-                    tile = this.gameBoard.tiles[this.column+1][this.row]
-                    break
-                case 'right':
-                    tile = this.gameBoard.tiles[this.column][this.row+1]
-                    break
-                case 'left':
-                    tile = this.gameBoard.tiles[this.column][this.row-1]
-                    break
-            }
-            if (tile.type === 'wall') {
-                style = '1px solid gray'
-            }
+            let neighbor = this.getWall(direction, this.row, this.column)
+            let style = neighbor.type === 'wall' ? '1px solid gray' : '1px dashed lightgray'
             return style
         },
     },

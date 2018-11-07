@@ -1,54 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App.vue'
+import mapTiles from './data/Map.js'
 
 Vue.config.productionTip = false
 Vue.use(Vuex);
-
-const mapData = [
-    '#########################',
-    '#.......#.......#.......#',
-    '#.......#.......#.......#',
-    '#.......................#',
-    '#.......#.......#.......#',
-    '#.......#.......#.......#',
-    '#.......#.......#.......#',
-    '#.......#.......#.......#',
-    '###.#########.#####.#####',
-    '#.......#.......#.......#',
-    '#.......#.......#.......#',
-    '#...............#.......#',
-    '#.......#.......#.......#',
-    '#.......#...............#',
-    '#.......#.......#.......#',
-    '#.......#.......#.......#',
-    '###.#######.#########.###',
-    '#.......#.......#.......#',
-    '#.......#.......#.......#',
-    '#.......#...............#',
-    '###.....#.......#.......#',
-    '###.............#.......#',
-    '###.....#.......#.......#',
-    '###.....#.......#.......#',
-    '#########################',
-]
-const tileDict = {
-    '#': {
-        type: 'wall',
-        collide: true,
-        style: {
-            'background-color': 'gray',
-        }
-    },
-    '.': {
-        type: 'floor',
-        collide: false,
-        style: {
-            'background-color': 'gainsboro',
-        }
-    },
-}
-const mapTiles = mapData.map(row => row.split('').map(key => tileDict[key]))
 
 const initialState = {
     game: {
@@ -94,12 +50,25 @@ const store = new Vuex.Store({
                 return state.gameBoard.tiles[row][column]
             }
         },
+        getWall: (state, getters) => (direction, row, column) => {
+            switch(direction) {
+                case 'top':
+                    return getters.getTile(row-1, column)
+                case 'bottom':
+                    return getters.getTile(row+1, column)
+                case 'left':
+                    return getters.getTile(row, column-1)
+                case 'right':
+                    return getters.getTile(row, column+1)
+            }
+        },
         isUnitOnTile: (state) => (row, column) => {
             return state.units.some(unit => unit.row === row && unit.column === column)
         },
         isOpenTile: (state, getters) => (row, column) => {
-            return getters.getTile(row, column) !== 1 &&
-                   getters.getTile(row, column) !== undefined &&
+            let tile = getters.getTile(row, column)
+            return tile.collide === false &&
+                   tile !== undefined &&
                    !getters.isUnitOnTile(row, column)
         },
         getBoardRows: state => {

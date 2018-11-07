@@ -1,8 +1,8 @@
 <template>
     <div id="app">
         <div :style="boardStyle">
-            <div class="row" v-for="(column, columnIndex) in gameBoard.tiles">
-                <game-tile v-for="(row, rowIndex) in column" :row="rowIndex" :column="columnIndex" :tile="column[rowIndex]" :gameBoard="gameBoard"></game-tile>
+            <div class="row" v-for="(row, rowIndex) in gameBoard.tiles">
+                <game-tile v-for="(tile, columnIndex) in row" :row="rowIndex" :column="columnIndex" :tile="tile" :gameBoard="gameBoard"></game-tile>
             </div>
             <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
         </div>
