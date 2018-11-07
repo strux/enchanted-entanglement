@@ -6,7 +6,7 @@
 import mapConversions from '../mixins/MapConversions.js'
 export default {
     name: 'GameTile',
-    props: ['gameBoard', 'row', 'column'],
+    props: ['gameBoard', 'row', 'column', 'tile'],
     mixins: [mapConversions],
     computed: {
         style() {
@@ -17,7 +17,7 @@ export default {
                     'height': `${size}px`,
                     'left': `${this.screenRow * size}px`,
                     'top': `${this.screenColumn * size}px`,
-                    'background-color': this.backgroundColor,
+                    'background-color': this.tile.style['background-color'],
                     'border-top': this.wallStyle('top'),
                     'border-bottom': this.wallStyle('bottom'),
                     'border-left': this.wallStyle('left'),
@@ -28,21 +28,6 @@ export default {
                 return { 'display': 'none' }
             }
         },
-        backgroundColor() {
-            let color
-            switch(this.type) {
-                case 1:
-                    color = 'grey'
-                    break
-                case 2:
-                    color = 'lightcoral'
-                    break
-                default:
-                    color = 'gainsboro'
-                    break
-            }
-            return color
-        },
         type() {
             return this.gameBoard.tiles[this.column][this.row]
         },
@@ -52,7 +37,7 @@ export default {
             return row % 2 === 0 || column % 2 === 0
         },
         wallStyle(direction) {
-            let style = 'none'
+            let style = '1px dashed lightgray'
             let tile
             switch(direction) {
                 case 'top':
@@ -68,10 +53,8 @@ export default {
                     tile = this.gameBoard.tiles[this.column][this.row-1]
                     break
             }
-            if (tile === 1) {
+            if (tile.type === 'wall') {
                 style = '1px solid gray'
-            } else {
-                style = '1px dashed lightgray'
             }
             return style
         },

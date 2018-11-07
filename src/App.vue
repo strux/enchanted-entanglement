@@ -2,7 +2,7 @@
     <div id="app">
         <div :style="boardStyle">
             <div class="row" v-for="(column, columnIndex) in gameBoard.tiles">
-                <game-tile v-for="(row, rowIndex) in column" :row="rowIndex" :column="columnIndex" :gameBoard="gameBoard"></game-tile>
+                <game-tile v-for="(row, rowIndex) in column" :row="rowIndex" :column="columnIndex" :tile="column[rowIndex]" :gameBoard="gameBoard"></game-tile>
             </div>
             <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
         </div>
@@ -46,7 +46,7 @@ export default {
             let style = {
                 'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
                 'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
-                'background-color': 'grey',
+                'background-color': 'gray',
                 'border': '1px solid black',
                 'position': 'absolute',
                 'top': 0,
