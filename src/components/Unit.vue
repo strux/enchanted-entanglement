@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import mapConversions from '../mixins/MapToScreen.js'
+import mapConversions from '../mixins/MapConversions.js'
 export default {
     name: 'Unit',
     props: ['unit', 'tileSize'],

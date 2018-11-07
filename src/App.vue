@@ -20,7 +20,7 @@ import { mapMutations } from 'vuex'
 import GameTile from './components/GameTile.vue'
 import Unit from './components/Unit.vue'
 import UnitControls from './components/UnitControls.vue'
-import mapConversions from './mixins/MapToScreen.js'
+import mapConversions from './mixins/MapConversions.js'
 
 export default {
     name: 'app',
