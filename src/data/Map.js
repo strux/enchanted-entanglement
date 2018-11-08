@@ -45,8 +45,7 @@ const tileDict = {
         collide: false,
         color: 'red',
         style: {
-            'background-color': 'red',
-            'opacity': 0.2,
+            'background-color': 'lightsalmon',
         },
     },
     'g': {
@@ -54,8 +53,7 @@ const tileDict = {
         collide: false,
         color: 'green',
         style: {
-            'background-color': 'green',
-            'opacity': 0.2,
+            'background-color': 'lightgreen',
         },
     },
     'R': {
@@ -63,8 +61,7 @@ const tileDict = {
         collide: false,
         color: 'red',
         style: {
-            'background-color': 'red',
-            'opacity': 0.5,
+            'background-color': 'salmon',
         },
     },
     'G': {
@@ -72,8 +69,7 @@ const tileDict = {
         collide: false,
         color: 'green',
         style: {
-            'background-color': 'green',
-            'opacity': 0.5,
+            'background-color': 'mediumseagreen',
         },
     },
 }
