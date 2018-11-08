@@ -32,17 +32,6 @@ const initialState = {
 const store = new Vuex.Store({
     state: initialState,
     mutations: {
-        createGameBoard (state, payload) {
-            let board = []
-            for (var x=0; x < payload.rows; x++) {
-                let row = [];
-                for (var y=0; y < payload.columns; y++) {
-                    row.push('open')
-                }
-                board.push(row)
-            }
-            state.gameBoard.tiles = board
-        },
         updateState (state, stateName) {
             state.game.state = stateName
         },
@@ -50,14 +39,13 @@ const store = new Vuex.Store({
             payload.unit.row = payload.row
             payload.unit.column = payload.column
         },
-
     },
     actions: {
         updateGameState ({ commit, state, getters }) {
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
                 commit('updateState', 'exit')
             }
-            if (state.game.state === 'exit' && getters.allUnitsOnExits) {
+            if (state.game.state === 'exit' && getters.allUnitsOnExit) {
                 commit('updateState', 'win')
             }
         },
@@ -132,17 +120,17 @@ const store = new Vuex.Store({
         getBoardColumns: state => {
             return state.gameBoard.tiles[0].length
         },
-        allUnitsOnPrize: (state, getters) => {
+        allUnitsOnType: (state, getters) => (type) => {
             return state.units.every(unit => {
                 let tile = getters.getTile(unit.row, unit.column)
-                return tile.type === 'prize' && tile.color === unit.color
+                return tile.type === type && tile.color === unit.color
             })
         },
-        allUnitsOnExits: (state, getters) => {
-            return state.units.every(unit => {
-                let tile = getters.getTile(unit.row, unit.column)
-                return tile.type === 'exit' && tile.color === unit.color
-            })
+        allUnitsOnPrize: (state, getters) => {
+            return getters.allUnitsOnType('prize')
+        },
+        allUnitsOnExit: (state, getters) => {
+            return getters.allUnitsOnType('exit')
         },
     },
 })

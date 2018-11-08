@@ -31,7 +31,6 @@ export default {
             return this.game.state !== 'prize' && this.game.state !== 'exit'
         },
         ...mapState(['game']),
-        ...mapGetters(['isOpenTile']),
     },
 }
 </script>
