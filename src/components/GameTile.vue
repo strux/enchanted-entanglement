@@ -38,7 +38,7 @@ export default {
         },
         wallStyle(direction) {
             let neighbor = this.getNeighborWall(direction, this.row, this.column)
-            return neighbor.type === 'wall' ? '1px solid gray' : '0px'
+            return neighbor.type === 'wall' ? '2px solid gray' : '0px'
         },
     },
 }

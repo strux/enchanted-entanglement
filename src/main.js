@@ -12,7 +12,7 @@ const initialState = {
         timer: 30 * 1000,
     },
     gameBoard: {
-        tileSize: 42,
+        tileSize: 89,
         tiles: mapTiles,
     },
     units: [

@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">Up</button>
-        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">Down</button>
-        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">Left</button>
-        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">Right</button>
+        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">⇧</button>
+        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">⇩</button>
+        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">⇦</button>
+        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">⇨</button>
     </div>
 </template>
 
@@ -24,7 +24,12 @@ export default {
     computed: {
         style() {
             return  {
+                'width': '260px',
+                'height': '120px',
+                'margin': '3px',
                 'color': this.unit.color,
+                'border': '2px solid black',
+                'font-size': '60px',
             }
         },
         disabled() {
