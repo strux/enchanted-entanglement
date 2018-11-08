@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="game.state !== 'exit'">Up</button>
-        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="game.state !== 'exit'">Down</button>
-        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="game.state !== 'exit'">Left</button>
-        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="game.state !== 'exit'">Right</button>
+        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">Up</button>
+        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">Down</button>
+        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">Left</button>
+        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">Right</button>
     </div>
 </template>
 
@@ -26,6 +26,9 @@ export default {
             return  {
                 'color': this.unit.color,
             }
+        },
+        disabled() {
+            return this.game.state !== 'prize' && this.game.state !== 'exit'
         },
         ...mapState(['game']),
         ...mapGetters(['isOpenTile']),

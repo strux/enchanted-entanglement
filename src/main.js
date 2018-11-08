@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 const initialState = {
     game: {
-        state: 'exit',
+        state: 'prize',
         timer: 30 * 1000,
     },
     gameBoard: {
@@ -49,6 +49,9 @@ const store = new Vuex.Store({
     },
     actions: {
         updateGameState ({ commit, state, getters }) {
+            if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
+                commit('updateState', 'exit')
+            }
             if (state.game.state === 'exit' && getters.allUnitsOnExits) {
                 commit('updateState', 'win')
             }
@@ -123,6 +126,12 @@ const store = new Vuex.Store({
         },
         getBoardColumns: state => {
             return state.gameBoard.tiles[0].length
+        },
+        allUnitsOnPrize: (state, getters) => {
+            return state.units.every(unit => {
+                let tile = getters.getTile(unit.row, unit.column)
+                return tile.type === 'prize' && tile.color === unit.color
+            })
         },
         allUnitsOnExits: (state, getters) => {
             return state.units.every(unit => {
