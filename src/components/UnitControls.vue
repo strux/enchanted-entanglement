@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="game.state !== 'play'">Up</button>
-        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="game.state !== 'play'">Down</button>
-        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="game.state !== 'play'">Left</button>
-        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="game.state !== 'play'">Right</button>
+        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">⇧</button>
+        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">⇩</button>
+        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">⇦</button>
+        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">⇨</button>
     </div>
 </template>
 
@@ -16,53 +16,26 @@ export default {
     props: ['unit'],
     methods: {
         moveUnitRequest(direction) {
-            let target = {};
-            let wall = {};
-            switch(direction) {
-                case 'up':
-                    wall.column = this.unit.column
-                    wall.row = this.unit.row - 1
-                    target.column = this.unit.column
-                    target.row = this.unit.row - 2
-                    break
-                case 'down':
-                    wall.column = this.unit.column
-                    wall.row = this.unit.row + 1
-                    target.column = this.unit.column
-                    target.row = this.unit.row + 2
-                    break
-                case 'right':
-                    wall.column = this.unit.column + 1
-                    wall.row = this.unit.row
-                    target.column = this.unit.column + 2
-                    target.row = this.unit.row
-                    break
-                case 'left':
-                    wall.column = this.unit.column - 1
-                    wall.row = this.unit.row
-                    target.column = this.unit.column - 2
-                    target.row = this.unit.row
-                    break
-            }
-            if (this.isOpenTile(wall.row, wall.column) &&
-                this.isOpenTile(target.row, target.column)) {
-                this.unit.row = target.row
-                this.unit.column = target.column
-            }
+            this.$store.dispatch('moveUnit', { unit: this.unit, direction })
+            // then once promise
+            this.$store.dispatch('updateGameState')
         },
     },
     computed: {
         style() {
             return  {
+                'width': '260px',
+                'height': '120px',
+                'margin': '3px',
                 'color': this.unit.color,
+                'border': '2px solid black',
+                'font-size': '60px',
             }
         },
-        ...mapState({
-            game: state => state.game,
-       }),
-       ...mapGetters({
-           isOpenTile: 'isOpenTile',
-       }),
+        disabled() {
+            return this.game.state !== 'prize' && this.game.state !== 'exit'
+        },
+        ...mapState(['game']),
     },
 }
 </script>

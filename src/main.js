@@ -8,20 +8,25 @@ Vue.use(Vuex);
 
 const initialState = {
     game: {
-        state: 'play',
+        state: 'pending',
         timer: 30 * 1000,
     },
     gameBoard: {
-        tileSize: 42,
+        tileSize: 89,
         tiles: mapTiles,
     },
     units: [
         {
+            id: 1,
             color: 'red',
             row: 11,
             column: 11,
-            prizeGlyph: 2,
-            exitGlyph: 3,
+        },
+        {
+            id: 2,
+            color: 'green',
+            row: 13,
+            column: 11,
         },
     ],
 }
@@ -29,16 +34,56 @@ const initialState = {
 const store = new Vuex.Store({
     state: initialState,
     mutations: {
-        createGameBoard (state, payload) {
-            let board = []
-            for (var x=0; x < payload.rows; x++) {
-                let row = [];
-                for (var y=0; y < payload.columns; y++) {
-                    row.push('open')
-                }
-                board.push(row)
+        updateState (state, stateName) {
+            state.game.state = stateName
+        },
+        moveUnit (state, payload) {
+            payload.unit.row = payload.row
+            payload.unit.column = payload.column
+        },
+    },
+    actions: {
+        updateGameState ({ commit, state, getters }) {
+            if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
+                commit('updateState', 'exit')
             }
-            state.gameBoard.tiles = board
+            if (state.game.state === 'exit' && getters.allUnitsOnExit) {
+                commit('updateState', 'win')
+            }
+        },
+        moveUnit ({ commit, state, getters }, payload) {
+            let target = {};
+            let wall = {};
+            switch(payload.direction) {
+                case 'up':
+                    wall.column = payload.unit.column
+                    wall.row = payload.unit.row - 1
+                    target.column = payload.unit.column
+                    target.row = payload.unit.row - 2
+                    break
+                case 'down':
+                    wall.column = payload.unit.column
+                    wall.row = payload.unit.row + 1
+                    target.column = payload.unit.column
+                    target.row = payload.unit.row + 2
+                    break
+                case 'left':
+                    wall.column = payload.unit.column - 1
+                    wall.row = payload.unit.row
+                    target.column = payload.unit.column - 2
+                    target.row = payload.unit.row
+                    break
+                case 'right':
+                    wall.column = payload.unit.column + 1
+                    wall.row = payload.unit.row
+                    target.column = payload.unit.column + 2
+                    target.row = payload.unit.row
+                    break
+            }
+            if (getters.isOpenTile(wall.row, wall.column) &&
+                getters.isOpenTile(target.row, target.column)) {
+                commit('moveUnit', { unit: payload.unit, row: target.row, column: target.column })
+            }
         },
     },
     getters: {
@@ -50,7 +95,7 @@ const store = new Vuex.Store({
                 return state.gameBoard.tiles[row][column]
             }
         },
-        getWall: (state, getters) => (direction, row, column) => {
+        getNeighborWall: (state, getters) => (direction, row, column) => {
             switch(direction) {
                 case 'top':
                     return getters.getTile(row-1, column)
@@ -76,6 +121,18 @@ const store = new Vuex.Store({
         },
         getBoardColumns: state => {
             return state.gameBoard.tiles[0].length
+        },
+        allUnitsOnType: (state, getters) => (type) => {
+            return state.units.every(unit => {
+                let tile = getters.getTile(unit.row, unit.column)
+                return tile.type === type && tile.unitId === unit.id
+            })
+        },
+        allUnitsOnPrize: (state, getters) => {
+            return getters.allUnitsOnType('prize')
+        },
+        allUnitsOnExit: (state, getters) => {
+            return getters.allUnitsOnType('exit')
         },
     },
 })

@@ -15,11 +15,11 @@ export default {
             if (!this.isWallCoord(this.row, this.column)) {
                 let size = this.gameBoard.tileSize
                 let style = {
+                    ...this.tile.style,
                     'width': `${size}px`,
                     'height': `${size}px`,
                     'left': `${this.screenColumn * size}px`,
                     'top': `${this.screenRow * size}px`,
-                    'background-color': this.tile.style['background-color'],
                     'border-top': this.wallStyle('top'),
                     'border-bottom': this.wallStyle('bottom'),
                     'border-left': this.wallStyle('left'),
@@ -30,16 +30,15 @@ export default {
                 return { 'display': 'none' }
             }
         },
-       ...mapGetters(['getWall']),
+       ...mapGetters(['getNeighborWall']),
     },
     methods: {
         isWallCoord(row, column) {
             return row % 2 === 0 || column % 2 === 0
         },
         wallStyle(direction) {
-            let neighbor = this.getWall(direction, this.row, this.column)
-            let style = neighbor.type === 'wall' ? '1px solid gray' : '1px dashed lightgray'
-            return style
+            let neighbor = this.getNeighborWall(direction, this.row, this.column)
+            return neighbor.type === 'wall' ? '2px solid gray' : '0px'
         },
     },
 }

@@ -1,14 +1,22 @@
 <template>
     <div id="app">
-        <div :style="boardStyle">
-            <div class="row" v-for="(row, rowIndex) in gameBoard.tiles">
-                <game-tile v-for="(tile, columnIndex) in row" :row="rowIndex" :column="columnIndex" :tile="tile" :gameBoard="gameBoard"></game-tile>
+
+        <div id="content-scaler" :style="scalerStyle">
+            <div :style="contentStyle">
+                <div :style="boardStyle">
+                    <div class="row" v-for="(row, rowIndex) in gameBoard.tiles">
+                        <game-tile v-for="(tile, columnIndex) in row" :row="rowIndex" :column="columnIndex" :tile="tile" :gameBoard="gameBoard"></game-tile>
+                    </div>
+                    <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
+                </div>
+                <div style="position: absolute; bottom: 0">
+                    <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
+                </div>
+                <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win'" v-on:click="game.state = 'exit'">
+                    <h1 v-if="game.state === 'win'">You won!</h1>
+                    <h2>Click to start</h2>
+                </div>
             </div>
-            <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
-        </div>
-        <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
-        <div :style="bannerStyle" v-if="game.state === 'pending'">
-            <button v-on:click="game.state = 'play'">Start Game</button>
         </div>
         <timer v-if="game.state ==='play'" :countdown="game.timer"/>
     </div>
@@ -38,21 +46,45 @@ export default {
     beforeCreate: function() {
         //this.$store.commit({ type:'createGameBoard', rows: 4, columns: 6 })
     },
+    beforeMount: function() {
+    },
     computed: {
+        scalerStyle () {
+            return {
+                'width': `${window.innerWidth}px`,
+                'height': `${window.innerHeight}px`,
+            }
+        },
+        contentStyle () {
+            let scale = Math.min((window.innerWidth / 1079), (window.innerHeight / 1920))
+            return {
+                'width': '1070px',
+                'height': '1920px',
+                'transform': `translate(-50%, -50%) scale(${scale})`,
+                'position': 'relative',
+                'left': '50%',
+                'top': '50%',
+                'transform-origin': 'center center',
+                //'background-image': `url(${require('./assets/bg_test.png')})`,
+            }
+        },
         width () {
             return this.columns
         },
         height () {
             return this.rows
         },
-        bannerStyle() {
+        overlayStyle() {
+            let backgroundColor = this.game.state === 'win' ? 'green' : 'gray'
             let style = {
+                'background-color': backgroundColor,
                 'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
                 'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
-                'background-color': 'gray',
                 'border': '1px solid black',
                 'position': 'absolute',
                 'top': 0,
+                'text-align': 'center',
+                'font-size': '50px',
             }
             return style
         },
@@ -61,6 +93,7 @@ export default {
                 'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
                 'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
                 'position': 'relative',
+                'background-color': 'hsl(0, 0%, 90%)',
             }
             return style
         },
@@ -82,10 +115,8 @@ export default {
 
 <style>
 body, html {
-    /*
     margin: 0;
     padding: 0;
-    */
 }
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -94,6 +125,9 @@ body, html {
     position: relative;
 }
 .row {
+    position: relative;
+}
+#content-scaler  {
     position: relative;
 }
 </style>
