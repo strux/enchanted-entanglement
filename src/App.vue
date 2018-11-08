@@ -10,7 +10,7 @@
         <div :style="bannerStyle" v-if="game.state === 'pending'">
             <button v-on:click="game.state = 'play'">Start Game</button>
         </div>
-        <timer v-if="game.state ==='play'" :starttime="game.timer" ></timer>
+        <timer v-if="game.state ==='play'" :countdown="game.timer"/>
     </div>
 </template>
 
