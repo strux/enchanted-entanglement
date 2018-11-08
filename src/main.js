@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 const initialState = {
     game: {
-        state: 'exit',
+        state: 'pending',
         timer: 30 * 1000,
     },
     gameBoard: {

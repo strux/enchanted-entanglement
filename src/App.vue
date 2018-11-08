@@ -12,9 +12,9 @@
                 <div style="position: absolute; bottom: 0">
                     <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
                 </div>
-                <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win'">
+                <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win'" v-on:click="game.state = 'exit'">
                     <h1 v-if="game.state === 'win'">You won!</h1>
-                    <button v-on:click="game.state = 'exit'">Start Game</button>
+                    <h2>Click to start</h2>
                 </div>
             </div>
         </div>
@@ -80,6 +80,8 @@ export default {
                 'border': '1px solid black',
                 'position': 'absolute',
                 'top': 0,
+                'text-align': 'center',
+                'font-size': '50px',
             }
             return style
         },
