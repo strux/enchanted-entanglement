@@ -31,14 +31,23 @@ const tileDict = {
         collide: true,
         style: {
             'background-color': 'gray',
-        }
+        },
     },
     '.': {
         type: 'floor',
         collide: false,
         style: {
             'background-color': 'gainsboro',
-        }
+        },
+    },
+    'R': {
+        type: 'exit',
+        collide: false,
+        color: 'red',
+        style: {
+            'background-color': 'red',
+            'opacity': 0.5,
+        },
     },
 }
 const mapTiles = mapData.map(row => row.split('').map(key => tileDict[key]))

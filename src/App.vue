@@ -7,8 +7,11 @@
             <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
         </div>
         <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
-        <div :style="bannerStyle" v-if="game.state === 'pending'">
-            <button v-on:click="game.state = 'play'">Start Game</button>
+        <div :style="startScreen" v-if="game.state === 'pending'">
+            <button v-on:click="game.state = 'exit'">Start Game</button>
+        </div>
+        <div :style="winScreen" v-if="game.state === 'win'">
+            <h1>You won!</h1>
         </div>
     </div>
 </template>
@@ -42,11 +45,22 @@ export default {
         height () {
             return this.rows
         },
+        startScreen() {
+            return {
+                ...this.bannerStyle,
+                'background-color': 'gray',
+            }
+        },
+        winScreen() {
+            return {
+                ...this.bannerStyle,
+                'background-color': 'green',
+            }
+        },
         bannerStyle() {
             let style = {
                 'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
                 'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
-                'background-color': 'gray',
                 'border': '1px solid black',
                 'position': 'absolute',
                 'top': 0,

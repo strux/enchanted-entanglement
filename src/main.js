@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 const initialState = {
     game: {
-        state: 'play',
+        state: 'exit',
         timer: 30 * 1000,
     },
     gameBoard: {
@@ -20,8 +20,6 @@ const initialState = {
             color: 'red',
             row: 11,
             column: 11,
-            prizeGlyph: 2,
-            exitGlyph: 3,
         },
     ],
 }
@@ -40,6 +38,55 @@ const store = new Vuex.Store({
             }
             state.gameBoard.tiles = board
         },
+        updateState (state, stateName) {
+            state.game.state = stateName
+        },
+        moveUnit (state, payload) {
+            payload.unit.row = payload.row
+            payload.unit.column = payload.column
+        },
+
+    },
+    actions: {
+        updateGameState ({ commit, state, getters }) {
+            if (state.game.state === 'exit' && getters.allUnitsOnExits) {
+                commit('updateState', 'win')
+            }
+        },
+        moveUnit ({ commit, state, getters }, payload) {
+            let target = {};
+            let wall = {};
+            switch(payload.direction) {
+                case 'up':
+                    wall.column = payload.unit.column
+                    wall.row = payload.unit.row - 1
+                    target.column = payload.unit.column
+                    target.row = payload.unit.row - 2
+                    break
+                case 'down':
+                    wall.column = payload.unit.column
+                    wall.row = payload.unit.row + 1
+                    target.column = payload.unit.column
+                    target.row = payload.unit.row + 2
+                    break
+                case 'left':
+                    wall.column = payload.unit.column - 1
+                    wall.row = payload.unit.row
+                    target.column = payload.unit.column - 2
+                    target.row = payload.unit.row
+                    break
+                case 'right':
+                    wall.column = payload.unit.column + 1
+                    wall.row = payload.unit.row
+                    target.column = payload.unit.column + 2
+                    target.row = payload.unit.row
+                    break
+            }
+            if (getters.isOpenTile(wall.row, wall.column) &&
+                getters.isOpenTile(target.row, target.column)) {
+                commit('moveUnit', { unit: payload.unit, row: target.row, column: target.column })
+            }
+        },
     },
     getters: {
         getTile: (state) => (row, column) => {
@@ -50,7 +97,7 @@ const store = new Vuex.Store({
                 return state.gameBoard.tiles[row][column]
             }
         },
-        getWall: (state, getters) => (direction, row, column) => {
+        getNeighborWall: (state, getters) => (direction, row, column) => {
             switch(direction) {
                 case 'top':
                     return getters.getTile(row-1, column)
@@ -76,6 +123,12 @@ const store = new Vuex.Store({
         },
         getBoardColumns: state => {
             return state.gameBoard.tiles[0].length
+        },
+        allUnitsOnExits: (state, getters) => {
+            return state.units.every(unit => {
+                let tile = getters.getTile(unit.row, unit.column)
+                return tile.type === 'exit' && tile.color === unit.color
+            })
         },
     },
 })
