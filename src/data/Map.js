@@ -10,9 +10,9 @@ const mapData = [
     '#####.#######.#######.###',
     '#...#.###.....###...#...#',
     '#.#.#.###.#######.#.#.#.#',
-    '#.#.....#.....#...#...#.#',
+    '#.#.....#....g#...#...#.#',
     '###.#####.....#.#.#####.#',
-    '#.............#.#.#.....#',
+    '#............G#.#.#.....#',
     '#####.#####...#.###.###.#',
     '###...#####..R.r###.###.#',
     '###.#######.#######.#####',
@@ -55,6 +55,24 @@ const tileDict = {
         color: 'red',
         style: {
             'background-color': 'red',
+            'opacity': 0.5,
+        },
+    },
+    'g': {
+        type: 'prize',
+        collide: false,
+        color: 'green',
+        style: {
+            'background-color': 'green',
+            'opacity': 0.3,
+        },
+    },
+    'G': {
+        type: 'exit',
+        collide: false,
+        color: 'green',
+        style: {
+            'background-color': 'green',
             'opacity': 0.5,
         },
     },

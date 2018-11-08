@@ -21,6 +21,11 @@ const initialState = {
             row: 11,
             column: 11,
         },
+        {
+            color: 'green',
+            row: 13,
+            column: 11,
+        },
     ],
 }
 
