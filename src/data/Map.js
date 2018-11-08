@@ -46,7 +46,16 @@ const tileDict = {
         color: 'red',
         style: {
             'background-color': 'red',
-            'opacity': 0.3,
+            'opacity': 0.2,
+        },
+    },
+    'g': {
+        type: 'prize',
+        collide: false,
+        color: 'green',
+        style: {
+            'background-color': 'green',
+            'opacity': 0.2,
         },
     },
     'R': {
@@ -56,15 +65,6 @@ const tileDict = {
         style: {
             'background-color': 'red',
             'opacity': 0.5,
-        },
-    },
-    'g': {
-        type: 'prize',
-        collide: false,
-        color: 'green',
-        style: {
-            'background-color': 'green',
-            'opacity': 0.3,
         },
     },
     'G': {

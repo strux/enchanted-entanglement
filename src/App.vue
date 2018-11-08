@@ -7,11 +7,9 @@
             <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
         </div>
         <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
-        <div :style="startScreen" v-if="game.state === 'pending'">
+        <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win'">
+            <h1 v-if="game.state === 'win'">You won!</h1>
             <button v-on:click="game.state = 'exit'">Start Game</button>
-        </div>
-        <div :style="winScreen" v-if="game.state === 'win'">
-            <h1>You won!</h1>
         </div>
     </div>
 </template>
@@ -45,20 +43,10 @@ export default {
         height () {
             return this.rows
         },
-        startScreen() {
-            return {
-                ...this.bannerStyle,
-                'background-color': 'gray',
-            }
-        },
-        winScreen() {
-            return {
-                ...this.bannerStyle,
-                'background-color': 'green',
-            }
-        },
-        bannerStyle() {
+        overlayStyle() {
+            let backgroundColor = this.game.state === 'win' ? 'green' : 'gray'
             let style = {
+                'background-color': backgroundColor,
                 'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
                 'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
                 'border': '1px solid black',
