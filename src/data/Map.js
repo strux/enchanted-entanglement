@@ -30,46 +30,50 @@ const tileDict = {
         type: 'wall',
         collide: true,
         style: {
-            'background-color': 'gray',
+            'background-color': 'hsl(0, 0%, 50%)',
         },
     },
     '.': {
         type: 'floor',
         collide: false,
         style: {
-            'background-color': 'gainsboro',
+            'background-color': 'hsl(0, 0%, 90%)',
         },
     },
     'r': {
         type: 'prize',
         collide: false,
+        unitId: 1,
         color: 'red',
         style: {
-            'background-color': 'lightsalmon',
+            'background-color': 'hsl(0, 100%, 80%)',
         },
     },
     'g': {
         type: 'prize',
         collide: false,
+        unitId: 2,
         color: 'green',
         style: {
-            'background-color': 'lightgreen',
+            'background-color': 'hsl(130, 70%, 50%)',
         },
     },
     'R': {
         type: 'exit',
         collide: false,
+        unitId: 1,
         color: 'red',
         style: {
-            'background-color': 'salmon',
+            'background-color': 'hsl(0, 100%, 70%)',
         },
     },
     'G': {
         type: 'exit',
         collide: false,
+        unitId: 2,
         color: 'green',
         style: {
-            'background-color': 'mediumseagreen',
+            'background-color': 'hsl(130, 70%, 40%)',
         },
     },
 }

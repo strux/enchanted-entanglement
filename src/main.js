@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 const initialState = {
     game: {
-        state: 'pending',
+        state: 'exit',
         timer: 30 * 1000,
     },
     gameBoard: {
@@ -17,11 +17,13 @@ const initialState = {
     },
     units: [
         {
+            id: 1,
             color: 'red',
             row: 11,
             column: 11,
         },
         {
+            id: 2,
             color: 'green',
             row: 13,
             column: 11,
@@ -123,7 +125,7 @@ const store = new Vuex.Store({
         allUnitsOnType: (state, getters) => (type) => {
             return state.units.every(unit => {
                 let tile = getters.getTile(unit.row, unit.column)
-                return tile.type === type && tile.color === unit.color
+                return tile.type === type && tile.unitId === unit.id
             })
         },
         allUnitsOnPrize: (state, getters) => {
