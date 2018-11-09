@@ -3,7 +3,7 @@
     <div class="timer">
 
         <p class="timertext" :style="style">
-            Timer: {{ countdown }} out of {{ totalTime }}
+            Timer: {{ countDown }} out of {{ gameDuration }}
         </p>
 
         <button v-on:click="pause()" :style="buttonstyle">pause timer!</button>
@@ -16,20 +16,21 @@
 import { mapState } from 'vuex'
 export default {
     name: 'Timer',
-    props: ['countdown'],                    // BEN NOTE: keep my own property rather than changing the state's source of truth timer
+    props: ['gameDuration'],
     created: function() {
         console.log('timer created!');
     },
-
+    data: function() {
+        return {
+            countDown: this.gameDuration  //Sandra: This will create a local instance of the duration for decrementing
+        }
+    },
     mounted: function () {
-        this.initduration = this.countdown;  //BEN NOTE: not sure where member variables are declared-- hence the rand assignment
         this.start();
     },
     computed: {
         ...mapState({
-            //BEN NOTE: unless i can find a way to make use of this alias... inaccessible in this component's methods
-            gameState: state => state.game,
-            totalTime: state => state.game.timer,
+            gameState: state => state.game, //Sandra: You can access this as this.gameState in methods or gameState in templates
        }),
 
         style() {
@@ -51,22 +52,19 @@ export default {
     },
     methods: {
         start: function() {
-            //adding timer id to this component
             this.timerId = setInterval(() => {
-                --this.countdown
-                if (this.countdown === 0) {
+                --this.countDown
+                if (this.countDown === 0) {
                     this.$store.dispatch('loseGame');
                     this.pause();
                 }
             }, 1000)
         },
         reset: function() {
-            //this won't work: totalTime Ref only accessible in template?? 
-            //this.countdown = totalTime;
-            this.countdown = this.initduration;
+            this.countDown = this.gameDuration;
         },
         flip: function() {
-            this.countdown = this.initduration - this.countdown;
+            this.countDown = this.gameDuration - this.countDown;
         },
         pause: function() {
             clearInterval(this.timerId);

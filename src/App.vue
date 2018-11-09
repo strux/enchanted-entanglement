@@ -10,7 +10,7 @@
                     <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
                 </div>
                 <div style="position: absolute; bottom: 0">
-                    <timer v-if="game.state === 'exit'" :countdown="game.timer"/>
+                    <timer v-if="game.state === 'exit'" :game-duration="game.timer"/>
                     <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
                 </div>
                 <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win' || game.state ==='lose'" v-on:click="game.state = 'exit'">
