@@ -42,12 +42,26 @@ export default {
         Timer,
     },
     mixins: [mapConversions],
-    methods: {
-    },
     beforeCreate: function() {
         //this.$store.commit({ type:'createGameBoard', rows: 4, columns: 6 })
     },
     beforeMount: function() {
+        this.setScale()
+        // This is buggy
+        window.addEventListener('resize', this.setScale)
+    },
+    beforeDestroy: function() {
+        window.removeEventListener('resize', this.setScale)
+    },
+    data: function() {
+        return {
+            scale: null,
+        }
+    },
+    methods: {
+        setScale () {
+            this.scale = Math.min((window.innerWidth / 1079), (window.innerHeight / 1920))
+        },
     },
     computed: {
         scalerStyle () {
@@ -57,11 +71,10 @@ export default {
             }
         },
         contentStyle () {
-            let scale = Math.min((window.innerWidth / 1079), (window.innerHeight / 1920))
             return {
                 'width': '1070px',
                 'height': '1920px',
-                'transform': `translate(-50%, -50%) scale(${scale})`,
+                'transform': `translate(-50%, -50%) scale(${this.scale})`,
                 'position': 'relative',
                 'left': '50%',
                 'top': '50%',
