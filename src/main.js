@@ -43,13 +43,16 @@ const store = new Vuex.Store({
         },
     },
     actions: {
-        updateGameState ({ commit, state, getters }) {
+        updateGameState ({commit, state, getters}) {
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
                 commit('updateState', 'exit')
             }
             if (state.game.state === 'exit' && getters.allUnitsOnExit) {
                 commit('updateState', 'win')
             }
+        },
+        loseGame ({commit, state, getters}) {
+            commit('updateState', 'lose')  //<-- BEN NOTE: am i doing this right?
         },
         moveUnit ({ commit, state, getters }, payload) {
             let target = {};
