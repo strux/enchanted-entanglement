@@ -9,7 +9,7 @@ Vue.use(Vuex);
 const initialState = {
     game: {
         state: 'pending',
-        timer: 30 * 1000,
+        timer: 30,
     },
     gameBoard: {
         tileSize: 89,

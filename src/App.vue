@@ -10,10 +10,10 @@
                     <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
                 </div>
                 <div style="position: absolute; bottom: 0">
-                    <timer v-if="game.state === 'exit'" :game-duration="game.timer"/>
+                    <timer v-if="game.state === 'prize' || game.state === 'exit'" :game-duration="game.timer"/>
                     <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
                 </div>
-                <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win' || game.state ==='lose'" v-on:click="game.state = 'exit'">
+                <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win' || game.state ==='lose'" v-on:click="game.state = 'prize'">
                     <h1 v-if="game.state === 'win'">You won!</h1>
                     <h1 v-if="game.state === 'lose'">You lost!</h1>
                     <h2>Click to start</h2>
