@@ -1,0 +1,74 @@
+<!doctype HTML>
+<html>
+<head>
+    <title></title>
+<style type="text/css">
+#devices {
+    margin: 10px auto;
+    width: 830px;
+    text-align: center
+}
+.device {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+#device1 {
+    margin-right: 20px;
+}
+#device2 {
+    margin-left: 20px;
+}
+.controls {
+    text-align: left;
+    padding: 0 10px;
+}
+.controls > button {
+    background: #666;
+    color: #ffaa00;
+    font-size: 1.5em;
+    padding: 2px 8px;
+    border-radius: 10px
+}
+iframe {
+    display: block;
+    margin-top: 10px;
+    border: 5px solid #333;
+}
+</style>
+</head>
+<body>
+    <header>
+
+    </header>
+    <div id="devices">
+        <div class="device" id="device1">
+            <div class="controls">
+                <button name="refresh">reload</button>
+            </div>
+            <iframe src="/" width="375" height="667"></iframe>
+        </div><div class="device" id="device1">
+            <div class="controls">
+                <button name="refresh">reload</button>
+            </div>
+            <iframe src="/" width="375" height="667"></iframe>
+        </div>
+    </div>
+<script>
+(function(){
+
+var outer = document.getElementById('devices');
+outer.addEventListener('click', reloadHandler);
+
+function reloadHandler(e) {
+    console.log(e)
+    if (e.target.name !== 'refresh') {
+        return;
+    }
+    var iframe = e.target.parentNode.parentNode.getElementsByTagName('iframe')[0];
+    iframe.src += '';
+}
+}());
+</script>
+</body>
+</html>
