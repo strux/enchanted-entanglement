@@ -18,7 +18,6 @@ export default {
     name: 'Timer',
     props: ['gameDuration'],
     created: function() {
-        console.log('timer created!');
     },
     data: function() {
         return {

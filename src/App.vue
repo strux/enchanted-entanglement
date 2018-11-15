@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-
         <div id="content-scaler" :style="scalerStyle">
             <div :style="contentStyle">
                 <div :style="boardStyle">
@@ -13,7 +12,7 @@
                     <timer v-if="game.state === 'prize' || game.state === 'exit'" :game-duration="game.timer"/>
                     <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
                 </div>
-                <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win' || game.state ==='lose'" v-on:click="game.state = 'prize'">
+                <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win' || game.state ==='lose'" v-on:click="createGame()">
                     <h1 v-if="game.state === 'win'">You won!</h1>
                     <h1 v-if="game.state === 'lose'">You lost!</h1>
                     <h2>Click to start</h2>
@@ -32,6 +31,7 @@ import Unit from './components/Unit.vue'
 import UnitControls from './components/UnitControls.vue'
 import mapConversions from './mixins/MapConversions.js'
 import Timer from './components/Timer.vue'
+import db from './database/firestore.js'
 
 export default {
     name: 'app',
@@ -56,11 +56,30 @@ export default {
     data: function() {
         return {
             scale: null,
+            creatingGame: false,
         }
     },
     methods: {
-        setScale () {
+        setScale() {
             this.scale = Math.min((window.innerWidth / 1079), (window.innerHeight / 1920))
+        },
+        createGame() {
+            let that = this;
+            if (!this.creatingGame) {
+                this.creatingGame = true
+                db.collection('games').add({
+                    testing: 'true',
+                })
+                .then(this.updateState)
+                .catch(function(error) {
+                    console.error('Error creating game: ', error);
+                });
+            }
+        },
+        updateState(docRef) {
+            console.log('Document written with ID: ', docRef.id);
+            this.game.state = 'prize'
+            this.creatingGame = false
         },
     },
     computed: {
@@ -92,8 +111,8 @@ export default {
             let backgroundColor = this.game.state === 'win' ? 'green' : 'gray'
             let style = {
                 'background-color': backgroundColor,
-                'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
-                'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
+                'width': '100%',
+                'height': '100%',
                 'border': '1px solid black',
                 'position': 'absolute',
                 'top': 0,
