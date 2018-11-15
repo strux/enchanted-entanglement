@@ -8,9 +8,12 @@ import { mapGetters } from 'vuex'
 
 export default {
     name: 'GameTile',
-    props: ['gameBoard', 'row', 'column', 'tile'],
+    props: ['gameBoard', 'row', 'column'],
     mixins: [mapConversions],
     computed: {
+        tile() {
+            return this.getTile(this.row, this.column)
+        },
         style() {
             if (!this.isWallCoord(this.row, this.column)) {
                 let size = this.gameBoard.tileSize
@@ -30,7 +33,7 @@ export default {
                 return { 'display': 'none' }
             }
         },
-       ...mapGetters(['getNeighborWall']),
+       ...mapGetters(['getTile','getNeighborWall']),
     },
     methods: {
         isWallCoord(row, column) {

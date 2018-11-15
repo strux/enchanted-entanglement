@@ -77,6 +77,4 @@ const tileDict = {
         },
     },
 }
-const mapTiles = mapData.map(row => row.split('').map(key => tileDict[key]))
-
-export default mapTiles
+export default mapData.flatMap(row => row.split('').map(key => tileDict[key]))

@@ -3,8 +3,8 @@
         <div id="content-scaler" :style="scalerStyle">
             <div :style="contentStyle">
                 <div :style="boardStyle">
-                    <div class="row" v-for="(row, rowIndex) in gameBoard.tiles" :key="rowIndex">
-                        <game-tile v-for="(tile, columnIndex) in row" :row="rowIndex" :column="columnIndex" :tile="tile" :gameBoard="gameBoard" :key="columnIndex"></game-tile>
+                    <div class="row" v-for="(val, rowIndex) in gameBoard.rows" :key="rowIndex">
+                        <game-tile v-for="(val, columnIndex) in gameBoard.columns" :row="rowIndex" :column="columnIndex" :gameBoard="gameBoard" :key="columnIndex"></game-tile>
                     </div>
                     <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="unit.color"></unit>
                 </div>
@@ -101,12 +101,6 @@ export default {
                 //'background-image': `url(${require('./assets/bg_test.png')})`,
             }
         },
-        width () {
-            return this.columns
-        },
-        height () {
-            return this.rows
-        },
         overlayStyle() {
             let backgroundColor = this.game.state === 'win' ? 'green' : 'gray'
             let style = {
@@ -136,8 +130,6 @@ export default {
             units: state => state.game.units,
        }),
        ...mapGetters({
-           columns: 'getBoardColumns',
-           rows: 'getBoardRows',
        }),
        ...mapMutations({
            createGameBoard: 'createGameBoard',
