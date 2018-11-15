@@ -64,9 +64,11 @@ export default {
             this.scale = Math.min((window.innerWidth / 1079), (window.innerHeight / 1920))
         },
         createGame() {
-            let that = this;
             if (!this.creatingGame) {
                 this.creatingGame = true
+                this.$store.dispatch('createGame')
+                this.creatingGame = false
+                /*
                 db.collection('games').add({
                     testing: 'true',
                 })
@@ -74,6 +76,7 @@ export default {
                 .catch(function(error) {
                     console.error('Error creating game: ', error);
                 });
+                */
             }
         },
         updateState(docRef) {

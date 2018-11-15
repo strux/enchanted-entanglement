@@ -5,7 +5,6 @@ import mapTiles from '../data/Map.js'
 
 Vue.use(Vuex);
 
-
 const initialState = {
     game: {
         state: 'pending',
@@ -32,8 +31,22 @@ const initialState = {
 }
 
 export default new Vuex.Store({
-    state: initialState,
+    state: {
+        game: {
+            state: 'pending',
+            timer: 30,
+        },
+        gameBoard: {
+            tiles: [[]],
+        },
+        units: [],
+    },
     mutations: {
+        createGame (state, initialState) {
+            state.gameBoard = initialState.gameBoard
+            state.units = initialState.units
+            state.game.state = 'prize'
+        },
         updateState (state, stateName) {
             state.game.state = stateName
         },
@@ -43,6 +56,9 @@ export default new Vuex.Store({
         },
     },
     actions: {
+        createGame ({commit, state, getters}) {
+            commit('createGame', initialState)
+        },
         updateGameState ({commit, state, getters}) {
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
                 commit('updateState', 'exit')
