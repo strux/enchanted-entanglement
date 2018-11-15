@@ -31,7 +31,7 @@ import Unit from './components/Unit.vue'
 import UnitControls from './components/UnitControls.vue'
 import mapConversions from './mixins/MapConversions.js'
 import Timer from './components/Timer.vue'
-import db from './database/firestore.js'
+import db from './store/firestore.js'
 
 export default {
     name: 'app',
