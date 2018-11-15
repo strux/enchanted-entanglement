@@ -42,9 +42,6 @@ export default {
         Timer,
     },
     mixins: [mapConversions],
-    beforeCreate: function() {
-        //this.$store.commit({ type:'createGameBoard', rows: 4, columns: 6 })
-    },
     beforeMount: function() {
         this.setScale()
         // This is buggy
@@ -135,8 +132,8 @@ export default {
         },
         ...mapState({
             game: state => state.game,
-            gameBoard: state => state.gameBoard,
-            units: state => state.units,
+            gameBoard: state => state.game.board,
+            units: state => state.game.units,
        }),
        ...mapGetters({
            columns: 'getBoardColumns',

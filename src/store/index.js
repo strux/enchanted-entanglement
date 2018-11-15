@@ -6,11 +6,9 @@ import mapTiles from '../data/Map.js'
 Vue.use(Vuex);
 
 const initialState = {
-    game: {
-        state: 'pending',
-        timer: 30,
-    },
-    gameBoard: {
+    state: 'pending',
+    timer: 30,
+    board: {
         tileSize: 89,
         tiles: mapTiles,
     },
@@ -35,17 +33,16 @@ export default new Vuex.Store({
         game: {
             state: 'pending',
             timer: 30,
+            board: {
+                tiles: [[]],
+            },
+            units: [],
         },
-        gameBoard: {
-            tiles: [[]],
-        },
-        units: [],
     },
     mutations: {
         createGame (state, initialState) {
             let clonedState = JSON.parse(JSON.stringify(initialState))
-            state.gameBoard = clonedState.gameBoard
-            state.units = clonedState.units
+            state.game = clonedState
             state.game.state = 'prize'
         },
         updateState (state, stateName) {
@@ -108,11 +105,11 @@ export default new Vuex.Store({
     },
     getters: {
         getTile: (state) => (row, column) => {
-            if (typeof state.gameBoard.tiles[row] === 'undefined' ||
-                typeof state.gameBoard.tiles[row][column] === 'undefined') {
+            if (typeof state.game.board.tiles[row] === 'undefined' ||
+                typeof state.game.board.tiles[row][column] === 'undefined') {
                 return undefined
             } else {
-                return state.gameBoard.tiles[row][column]
+                return state.game.board.tiles[row][column]
             }
         },
         getNeighborWall: (state, getters) => (direction, row, column) => {
@@ -128,7 +125,7 @@ export default new Vuex.Store({
             }
         },
         isUnitOnTile: (state) => (row, column) => {
-            return state.units.some(unit => unit.row === row && unit.column === column)
+            return state.game.units.some(unit => unit.row === row && unit.column === column)
         },
         isOpenTile: (state, getters) => (row, column) => {
             let tile = getters.getTile(row, column)
@@ -137,13 +134,13 @@ export default new Vuex.Store({
                    !getters.isUnitOnTile(row, column)
         },
         getBoardRows: state => {
-            return state.gameBoard.tiles.length
+            return state.game.board.tiles.length
         },
         getBoardColumns: state => {
-            return state.gameBoard.tiles[0].length
+            return state.game.board.tiles[0].length
         },
         allUnitsOnType: (state, getters) => (type) => {
-            return state.units.every(unit => {
+            return state.game.units.every(unit => {
                 let tile = getters.getTile(unit.row, unit.column)
                 return tile.type === type && tile.unitId === unit.id
             })
