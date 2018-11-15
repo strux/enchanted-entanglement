@@ -3,14 +3,14 @@
         <div id="content-scaler" :style="scalerStyle">
             <div :style="contentStyle">
                 <div :style="boardStyle">
-                    <div class="row" v-for="(row, rowIndex) in gameBoard.tiles">
-                        <game-tile v-for="(tile, columnIndex) in row" :row="rowIndex" :column="columnIndex" :tile="tile" :gameBoard="gameBoard"></game-tile>
+                    <div class="row" v-for="(row, rowIndex) in gameBoard.tiles" :key="rowIndex">
+                        <game-tile v-for="(tile, columnIndex) in row" :row="rowIndex" :column="columnIndex" :tile="tile" :gameBoard="gameBoard" :key="columnIndex"></game-tile>
                     </div>
-                    <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize"></unit>
+                    <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="unit.color"></unit>
                 </div>
                 <div style="position: absolute; bottom: 0">
                     <timer v-if="game.state === 'prize' || game.state === 'exit'" :game-duration="game.timer"/>
-                    <unit-controls v-for="unit in units" :unit="unit"></unit-controls>
+                    <unit-controls v-for="unit in units" :unit="unit" :key="unit.color"></unit-controls>
                 </div>
                 <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win' || game.state ==='lose'" v-on:click="createGame()">
                     <h1 v-if="game.state === 'win'">You won!</h1>

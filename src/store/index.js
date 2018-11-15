@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import db from './firestore.js'
+//import db from './firestore.js'
 import mapTiles from '../data/Map.js'
 
 Vue.use(Vuex);
@@ -56,7 +56,7 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        createGame ({commit, state, getters}) {
+        createGame ({commit}) {
             commit('createGame', initialState)
         },
         updateGameState ({commit, state, getters}) {
@@ -67,10 +67,10 @@ export default new Vuex.Store({
                 commit('updateState', 'win')
             }
         },
-        loseGame ({commit, state, getters}) {
+        loseGame ({commit}) {
             commit('updateState', 'lose')  //<-- BEN NOTE: am i doing this right?
         },
-        moveUnit ({ commit, state, getters }, payload) {
+        moveUnit ({ commit, getters }, payload) {
             let target = {};
             let wall = {};
             switch(payload.direction) {
