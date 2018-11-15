@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-//import db from './firestore.js'
+import db from './firestore.js'
 import mapTiles from '../data/Map.js'
 
 Vue.use(Vuex);
@@ -43,8 +43,9 @@ export default new Vuex.Store({
     },
     mutations: {
         createGame (state, initialState) {
-            state.gameBoard = initialState.gameBoard
-            state.units = initialState.units
+            let clonedState = JSON.parse(JSON.stringify(initialState))
+            state.gameBoard = clonedState.gameBoard
+            state.units = clonedState.units
             state.game.state = 'prize'
         },
         updateState (state, stateName) {
