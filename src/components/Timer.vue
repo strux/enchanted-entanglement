@@ -3,10 +3,9 @@
     <div class="timer">
 
         <p class="timertext" :style="style">
-            Timer: {{ countDown }} out of {{ gameDuration }}
+            {{minutes}}:{{seconds}}
         </p>
 
-        <button v-on:click="pause()" :style="buttonstyle">pause timer!</button>
         <button v-on:click="reset()" :style="buttonstyle">reset timer!</button>
         <button v-on:click="flip()" :style="buttonstyle">flip timer!</button>
     </div>
@@ -18,10 +17,14 @@ export default {
     name: 'Timer',
     props: ['gameDuration'],
     created: function() {
+        console.log('timer created!');
+        this.format();
     },
     data: function() {
         return {
-            countDown: this.gameDuration  //Sandra: This will create a local instance of the duration for decrementing
+            countDown: this.gameDuration,  //Sandra: This will create a local instance of the duration for decrementing
+            minutes: '',
+            seconds: ''
         }
     },
     mounted: function () {
@@ -53,6 +56,7 @@ export default {
         start: function() {
             this.timerId = setInterval(() => {
                 --this.countDown
+                this.format();
                 if (this.countDown === 0) {
                     this.$store.dispatch('loseGame');
                     this.pause();
@@ -67,6 +71,18 @@ export default {
         },
         pause: function() {
             clearInterval(this.timerId);
+            this.format();
+        },
+        format: function() {
+            function appendZeroIfOneDigit(timeUnits){
+                if (timeUnits < 10) {
+                    return '0' + timeUnits.toString();
+                }
+                return timeUnits;
+            };
+
+            this.seconds = appendZeroIfOneDigit(this.countDown % 60);
+            this.minutes = appendZeroIfOneDigit(Math.floor(this.countDown / 60));
         }
     },
 }
