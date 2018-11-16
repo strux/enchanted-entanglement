@@ -23,6 +23,14 @@
     text-align: left;
     padding: 0 10px;
 }
+.controls > .hash {
+    font-size: 1.5em;
+    color: black;
+    width: 60px;
+    display: inline-block;
+    overflow: hidden;
+    font-family: monospace;
+}
 .controls > button {
     background: #666;
     color: #ffaa00;
@@ -42,17 +50,16 @@ iframe {
 </style>
 </head>
 <body>
-    <header>
-
-    </header>
     <div id="devices">
         <div class="device" id="device1">
             <div class="controls">
+                <span class="hash">----</span>
                 <button name="refresh">reload</button>
             </div>
             <iframe src="/" width="375" height="667"></iframe>
         </div><div class="device" id="device1">
             <div class="controls">
+                <span class="hash">----</span>
                 <button name="refresh">reload</button>
                 <button id="joinButton" name="join" disabled>join</button>
             </div>
@@ -68,6 +75,7 @@ iframe {
     frames[0].contentWindow.addEventListener('hashchange', e => {
         joinButton.style.opacity = 1
         joinButton.disabled = false
+        updateHashes()
     });
 
     function clickHandler (e) {
@@ -90,11 +98,20 @@ iframe {
         frames[1].contentWindow.location.hash = hash
         joinButton.style.opacity = 0;
         joinButton.disabled = true;
+        updateHashes()
     }
 
     function reloadHandler(e) {
         let iframe = e.target.parentNode.parentNode.getElementsByTagName('iframe')[0]
         iframe.src += ''
+    }
+
+    function updateHashes() {
+        Array.prototype.forEach.call(frames, f => {
+            let hash = f.contentWindow.location.hash.substr(1)
+            let el = f.parentNode.getElementsByClassName('hash')[0]
+            el.innerHTML = hash || '----'
+        })
     }
 })()
 </script>
