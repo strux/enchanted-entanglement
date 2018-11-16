@@ -44,6 +44,11 @@ export default {
     mixins: [mapConversions],
     beforeMount: function() {
         this.setScale()
+        window.addEventListener('hashchange', this.joinGame)
+        if (window.location.hash.length > 1) {
+            this.joinGame()
+        }
+
         // This is buggy
         window.addEventListener('resize', this.setScale)
     },
@@ -65,16 +70,10 @@ export default {
                 this.creatingGame = true
                 this.$store.dispatch('createGame')
                 this.creatingGame = false
-                /*
-                db.collection('games').add({
-                    testing: 'true',
-                })
-                .then(this.updateState)
-                .catch(function(error) {
-                    console.error('Error creating game: ', error);
-                });
-                */
             }
+        },
+        joinGame() {
+            this.$store.dispatch('joinGame')
         },
         updateState(docRef) {
             console.log('Document written with ID: ', docRef.id);

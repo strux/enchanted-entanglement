@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import db from './firestore.js'
 import mapTiles from '../data/Map.js'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 const initialState = {
     state: 'pending',
@@ -62,14 +62,18 @@ export default new Vuex.Store({
             db.collection('games').add(state.game)
             .then(function(docRef) {
                 window.location.hash = '#' + docRef.id
-                docRef.onSnapshot(function(doc) {
-                    //console.log("Current data: ", doc.data());
-                    state.game.units = doc.data().units
-                });
             })
             .catch(function(error) {
                 console.error('Error creating game: ', error)
             })
+        },
+        joinGame ({commit, state}) {
+            let id = window.location.hash.substring(1)
+            db.collection('games').doc(id)
+                .onSnapshot(function(doc) {
+                    console.log("Current data: ", doc.data())
+                    state.game = doc.data()
+                })
         },
         updateGameState ({commit, state, getters}) {
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
@@ -82,9 +86,9 @@ export default new Vuex.Store({
         loseGame ({commit}) {
             commit('updateState', 'lose')
         },
-        moveUnit ({ commit, getters }, payload) {
-            let target = {};
-            let wall = {};
+        moveUnit ({ commit, state, getters }, payload) {
+            let target = {}
+            let wall = {}
             switch(payload.direction) {
                 case 'up':
                     wall.column = payload.unit.column
@@ -114,7 +118,12 @@ export default new Vuex.Store({
             if (getters.isOpenTile(wall.row, wall.column) &&
                 getters.isOpenTile(target.row, target.column)) {
                 commit('moveUnit', { unit: payload.unit, row: target.row, column: target.column })
-            }
+
+                // DRY this up
+                let id = window.location.hash.substring(1)
+                db.collection('games').doc(id)
+                    .set(state.game)
+                }
         },
     },
     getters: {
