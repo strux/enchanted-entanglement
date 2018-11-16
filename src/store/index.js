@@ -59,7 +59,6 @@ export default new Vuex.Store({
     },
     actions: {
         createGame ({commit, state}) {
-            window.location.hash = ''
             commit('createGame', initialState)
             db.collection('boards')
             .add(state.game.board)
@@ -88,6 +87,9 @@ export default new Vuex.Store({
             })
             .then(boardDoc => {
                 state.game.board = boardDoc.data()
+            })
+            .catch(function(error) {
+                console.error('Error joining game: ', error)
             })
 
             gameDocRef.onSnapshot(function(gameDoc) {
@@ -142,6 +144,9 @@ export default new Vuex.Store({
                 // DRY this up
                 let id = window.location.hash.substring(1)
                 db.collection('games').doc(id).update({ units: state.game.units })
+                .catch(function(error) {
+                    console.error('Error moving unit: ', error)
+                })
             }
         },
     },
