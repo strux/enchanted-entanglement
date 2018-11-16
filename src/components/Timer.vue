@@ -17,8 +17,7 @@ export default {
     name: 'Timer',
     props: ['gameDuration'],
     created: function() {
-        console.log('timer created!');
-        this.format();
+        this.format()
     },
     data: function() {
         return {
@@ -28,7 +27,7 @@ export default {
         }
     },
     mounted: function () {
-        this.start();
+        this.start()
     },
     computed: {
         ...mapState({
@@ -56,33 +55,33 @@ export default {
         start: function() {
             this.timerId = setInterval(() => {
                 --this.countDown
-                this.format();
+                this.format()
                 if (this.countDown === 0) {
-                    this.$store.dispatch('loseGame');
-                    this.pause();
+                    this.$store.dispatch('loseGame')
+                    this.pause()
                 }
             }, 1000)
         },
         reset: function() {
-            this.countDown = this.gameDuration;
+            this.countDown = this.gameDuration
         },
         flip: function() {
-            this.countDown = this.gameDuration - this.countDown;
+            this.countDown = this.gameDuration - this.countDown
         },
         pause: function() {
-            clearInterval(this.timerId);
-            this.format();
+            clearInterval(this.timerId)
+            this.format()
         },
         format: function() {
             function appendZeroIfOneDigit(timeUnits){
                 if (timeUnits < 10) {
-                    return '0' + timeUnits.toString();
+                    return '0' + timeUnits.toString()
                 }
-                return timeUnits;
-            };
+                return timeUnits
+            }
 
-            this.seconds = appendZeroIfOneDigit(this.countDown % 60);
-            this.minutes = appendZeroIfOneDigit(Math.floor(this.countDown / 60));
+            this.seconds = appendZeroIfOneDigit(this.countDown % 60)
+            this.minutes = appendZeroIfOneDigit(Math.floor(this.countDown / 60))
         }
     },
 }

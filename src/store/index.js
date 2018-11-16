@@ -49,6 +49,8 @@ export default new Vuex.Store({
         },
         updateState (state, stateName) {
             state.game.state = stateName
+            let id = window.location.hash.substring(1)
+            db.collection('games').doc(id).update({ state: state.game.state })
         },
         moveUnit (state, payload) {
             payload.unit.row = payload.row
@@ -57,11 +59,19 @@ export default new Vuex.Store({
     },
     actions: {
         createGame ({commit, state}) {
-            commit('createGame', initialState)
             window.location.hash = ''
-            db.collection('games').add(state.game)
-            .then(function(docRef) {
-                window.location.hash = '#' + docRef.id
+            commit('createGame', initialState)
+            db.collection('boards')
+            .add(state.game.board)
+            .then(function(boardRef) {
+                return db.collection('games').add({
+                    state: state.game.state,
+                    units: state.game.units,
+                    boardId: boardRef.id,
+                })
+            })
+            .then(function(gameRef) {
+                window.location.hash = '#' + gameRef.id
             })
             .catch(function(error) {
                 console.error('Error creating game: ', error)
@@ -69,11 +79,21 @@ export default new Vuex.Store({
         },
         joinGame ({commit, state}) {
             let id = window.location.hash.substring(1)
-            db.collection('games').doc(id)
-                .onSnapshot(function(doc) {
-                    console.log("Current data: ", doc.data())
-                    state.game = doc.data()
-                })
+            let gameDocRef = db.collection('games').doc(id)
+
+            gameDocRef
+            .get()
+            .then(gameDoc => {
+                return db.collection('boards').doc(gameDoc.data().boardId).get()
+            })
+            .then(boardDoc => {
+                state.game.board = boardDoc.data()
+            })
+
+            gameDocRef.onSnapshot(function(gameDoc) {
+                state.game.state = gameDoc.data().state
+                state.game.units = gameDoc.data().units
+            })
         },
         updateGameState ({commit, state, getters}) {
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
@@ -121,9 +141,8 @@ export default new Vuex.Store({
 
                 // DRY this up
                 let id = window.location.hash.substring(1)
-                db.collection('games').doc(id)
-                    .set(state.game)
-                }
+                db.collection('games').doc(id).update({ units: state.game.units })
+            }
         },
     },
     getters: {

@@ -17,8 +17,7 @@ export default {
     methods: {
         moveUnitRequest(direction) {
             this.$store.dispatch('moveUnit', { unit: this.unit, direction })
-            // then once promise
-            this.$store.dispatch('updateGameState')
+                .then(this.$store.dispatch('updateGameState'))
         },
     },
     computed: {
