@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 const initialState = {
     state: 'pending',
-    timer: 30,
+    timer: 60,
     board: {
         tileSize: 89,
         rows: 25,
@@ -31,6 +31,7 @@ const initialState = {
 }
 export default new Vuex.Store({
     state: {
+        db: db,
         game: {
             state: 'pending',
             timer: 30,
@@ -57,12 +58,17 @@ export default new Vuex.Store({
     actions: {
         createGame ({commit, state}) {
             commit('createGame', initialState)
+            window.location.hash = ''
             db.collection('games').add(state.game)
             .then(function(docRef) {
-                console.log('Created game: ', docRef);
+                window.location.hash = '#' + docRef.id
+                docRef.onSnapshot(function(doc) {
+                    //console.log("Current data: ", doc.data());
+                    state.game.units = doc.data().units
+                });
             })
             .catch(function(error) {
-                console.error('Error creating game: ', error);
+                console.error('Error creating game: ', error)
             })
         },
         updateGameState ({commit, state, getters}) {
