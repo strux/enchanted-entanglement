@@ -10,6 +10,8 @@
                 </div>
                 <div style="position: absolute; bottom: 0">
                     <timer v-if="game.state === 'prize' || game.state === 'exit'" :game-duration="game.timer"/>
+                </div>
+                <div style="position: absolute; bottom: 0; right: 0">
                     <unit-controls v-for="unit in units" :unit="unit" :key="unit.color"></unit-controls>
                 </div>
                 <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win' || game.state ==='lose'" v-on:click="createGame()">
