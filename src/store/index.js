@@ -163,6 +163,9 @@ export default new Vuex.Store({
         userHasControl: (state, getters) => (control) => {
             return getters.currentPlayer.controls.some(ctrl => ctrl === control)
         },
+        getState: (state) => {
+            return state.game.state
+        },
         getTile: (state) => (row, column) => {
             let index = column + (row * state.game.board.columns)
             if (typeof state.game.board.tiles[index] === 'undefined') {

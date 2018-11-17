@@ -1,4 +1,4 @@
-const mapData = [
+const mapSource = [
     '#########################',
     '#.###..R#...###.#####R###',
     '#.###.###.#.###.#####.###',
@@ -25,7 +25,8 @@ const mapData = [
     '#R#.....#.......#.......#',
     '#########################',
 ]
-const tileDict = {
+
+export const tileDict = {
     '#': {
         type: 'wall',
         collide: true,
@@ -77,4 +78,6 @@ const tileDict = {
         },
     },
 }
-export default mapData.reduce((accum, curr) => accum.concat(curr.split('')), []).map(key => tileDict[key])
+export const mapData = mapSource.reduce((accum, curr) => accum.concat(curr.split('')), []).map(key => tileDict[key])
+
+export default mapData
