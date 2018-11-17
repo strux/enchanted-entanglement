@@ -61,7 +61,7 @@ export default new Vuex.Store({
         async createGame ({commit, state}) {
             try {
                 commit('createGame', initialState)
-                let boardRef = await db.collection('boards').add(state.game.board)
+                let boardRef = await db.collection('boards').add({ ...state.game.board, tiles: JSON.stringify(state.game.board.tiles) })
                 let gameRef = await db.collection('games').add({
                     state: state.game.state,
                     units: state.game.units,
@@ -79,7 +79,7 @@ export default new Vuex.Store({
             try {
                 let gameDoc = await gameDocRef.get()
                 let boardDoc = await db.collection('boards').doc(gameDoc.data().boardId).get()
-                state.game.board = boardDoc.data()
+                state.game.board = { ...boardDoc.data(), tiles: JSON.parse(boardDoc.data().tiles) }
             }
             catch(error) {
                 console.error('Error joining game: ', error)
