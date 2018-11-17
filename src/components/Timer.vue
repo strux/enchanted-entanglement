@@ -5,9 +5,9 @@
         <p class="timertext" :style="style">
             {{minutes}}:{{seconds}}
         </p>
+        <button v-on:click="reset()" v-bind:disabled="gameState.state ==='prize'" :style="buttonstyle">reset timer!</button>
+        <button v-on:click="flip()" v-bind:disabled="gameState.state ==='pending'" :style="buttonstyle">flip timer!</button>
 
-        <button v-on:click="reset()" :style="buttonstyle">reset timer!</button>
-        <button v-on:click="flip()" :style="buttonstyle">flip timer!</button>
     </div>
 </template>
 
@@ -55,12 +55,12 @@ export default {
         start: function() {
             this.timerId = setInterval(() => {
                 --this.countDown
-                this.format()
-                if (this.countDown === 0) {
-                    // Disabling temporarily
+                if (this.countDown <= 0) {
+                    // commenting out lose condition
                     // this.$store.dispatch('loseGame')
                     this.pause()
                 }
+                this.format()
             }, 1000)
         },
         reset: function() {
