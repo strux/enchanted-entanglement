@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">⇧</button>
-        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">⇩</button>
-        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">⇦</button>
-        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">⇨</button>
+        <button v-if="userHasControl('up')" v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">⇧</button>
+        <button v-if="userHasControl('down')" v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">⇩</button>
+        <button v-if="userHasControl('left')" v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">⇦</button>
+        <button v-if="userHasControl('right')" v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">⇨</button>
     </div>
 </template>
 
@@ -35,6 +35,7 @@ export default {
             return this.game.state !== 'prize' && this.game.state !== 'exit'
         },
         ...mapState(['game']),
+        ...mapGetters(['userHasControl']),
     },
 }
 </script>

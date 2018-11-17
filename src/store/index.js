@@ -39,12 +39,23 @@ export default new Vuex.Store({
             },
             units: [],
         },
+        playerId: null,
+        players: [
+            {
+                id: 1,
+                controls: ['up', 'left'],
+            },
+            {
+                id: 2,
+                controls: ['down', 'right'],
+            },
+        ],
     },
     mutations: {
         createGame (state, initialState) {
+            state.playerId = 1
             let clonedState = JSON.parse(JSON.stringify(initialState))
-            state.game = clonedState
-            state.game.state = 'prize'
+            state.game = { ...clonedState, state: 'prize' }
         },
         updateState (state, stateName) {
             state.game.state = stateName
@@ -74,6 +85,10 @@ export default new Vuex.Store({
             }
         },
         async joinGame ({commit, state}) {
+            // If you didn't get assigned an id when creating, you are second player
+            if (!state.playerId) {
+                state.playerId = 2
+            }
             let id = window.location.hash.substring(1)
             let gameDocRef = db.collection('games').doc(id)
             try {
@@ -142,6 +157,12 @@ export default new Vuex.Store({
         },
     },
     getters: {
+        currentPlayer: (state) => {
+            return state.players.find(player => player.id === state.playerId)
+        },
+        userHasControl: (state, getters) => (control) => {
+            return getters.currentPlayer.controls.some(ctrl => ctrl === control)
+        },
         getTile: (state) => (row, column) => {
             let index = column + (row * state.game.board.columns)
             if (typeof state.game.board.tiles[index] === 'undefined') {
