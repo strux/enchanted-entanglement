@@ -31,7 +31,6 @@ const initialState = {
 }
 export default new Vuex.Store({
     state: {
-        db: db,
         game: {
             state: 'pending',
             timer: 30,
@@ -51,6 +50,7 @@ export default new Vuex.Store({
             state.game.state = stateName
             let id = window.location.hash.substring(1)
             db.collection('games').doc(id).update({ state: state.game.state })
+            .catch((error) => console.error('Error updating game state: ', error))
         },
         moveUnit (state, payload) {
             payload.unit.row = payload.row
@@ -58,39 +58,32 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        createGame ({commit, state}) {
-            commit('createGame', initialState)
-            db.collection('boards')
-            .add(state.game.board)
-            .then(function(boardRef) {
-                return db.collection('games').add({
+        async createGame ({commit, state}) {
+            try {
+                commit('createGame', initialState)
+                let boardRef = await db.collection('boards').add(state.game.board)
+                let gameRef = await db.collection('games').add({
                     state: state.game.state,
                     units: state.game.units,
                     boardId: boardRef.id,
                 })
-            })
-            .then(function(gameRef) {
                 window.location.hash = '#' + gameRef.id
-            })
-            .catch(function(error) {
+            }
+            catch(error) {
                 console.error('Error creating game: ', error)
-            })
+            }
         },
-        joinGame ({commit, state}) {
+        async joinGame ({commit, state}) {
             let id = window.location.hash.substring(1)
             let gameDocRef = db.collection('games').doc(id)
-
-            gameDocRef
-            .get()
-            .then(gameDoc => {
-                return db.collection('boards').doc(gameDoc.data().boardId).get()
-            })
-            .then(boardDoc => {
+            try {
+                let gameDoc = await gameDocRef.get()
+                let boardDoc = await db.collection('boards').doc(gameDoc.data().boardId).get()
                 state.game.board = boardDoc.data()
-            })
-            .catch(function(error) {
+            }
+            catch(error) {
                 console.error('Error joining game: ', error)
-            })
+            }
 
             gameDocRef.onSnapshot(function(gameDoc) {
                 state.game.state = gameDoc.data().state
@@ -144,9 +137,7 @@ export default new Vuex.Store({
                 // DRY this up
                 let id = window.location.hash.substring(1)
                 db.collection('games').doc(id).update({ units: state.game.units })
-                .catch(function(error) {
-                    console.error('Error moving unit: ', error)
-                })
+                .catch((error) => console.error('Error moving unit: ', error))
             }
         },
     },
