@@ -68,6 +68,14 @@ export const tileDict = {
             'background-color': 'hsl(0, 100%, 70%)',
         },
     },
+    'T': {
+        type: 'time',
+        collide: false,
+        color: 'blue',
+        style: {
+            'background-color': 'hsl(240, 60%, 70%)',
+        },
+    },
     'G': {
         type: 'exit',
         collide: false,

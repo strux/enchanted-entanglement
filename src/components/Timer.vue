@@ -5,8 +5,7 @@
         <p class="timertext" :style="style">
             {{minutes}}:{{seconds}}
         </p>
-        <button v-on:click="reset()" v-bind:disabled="gameState.state ==='prize'" :style="buttonstyle">reset timer!</button>
-        <button v-on:click="flip()" v-bind:disabled="gameState.state ==='pending'" :style="buttonstyle">flip timer!</button>
+        <button v-on:click="flip()" v-bind:disabled="gameState.state !=='time'" :style="buttonstyle">flip timer!</button>
 
     </div>
 </template>
