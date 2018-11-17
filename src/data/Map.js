@@ -77,4 +77,4 @@ const tileDict = {
         },
     },
 }
-export default mapData.flatMap(row => row.split('').map(key => tileDict[key]))
+export default mapData.reduce((accum, curr) => accum.concat(curr.split('')), []).map(key => tileDict[key])
