@@ -32,7 +32,7 @@ export default {
             }
         },
         disabled() {
-            return this.game.state !== 'prize' && this.game.state !== 'exit'
+            return this.game.state !== 'prize' && this.game.state !== 'exit' && this.game.state !== 'time'
         },
         ...mapState(['game']),
     },

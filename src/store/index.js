@@ -98,6 +98,8 @@ export default new Vuex.Store({
             })
         },
         updateGameState ({commit, state, getters}) {
+            commit('updateState', getters.unitOnTimeTile ? 'time' : 'prize')
+
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
                 commit('updateState', 'exit')
             }
@@ -186,11 +188,20 @@ export default new Vuex.Store({
                 return tile.type === type && tile.unitId === unit.id
             })
         },
+        unitOnType: (state, getters) => (type) => {
+            return state.game.units.some(unit => {
+                let tile = getters.getTile(unit.row, unit.column)
+                return tile.type === type
+            })
+        },
         allUnitsOnPrize: (state, getters) => {
             return getters.allUnitsOnType('prize')
         },
         allUnitsOnExit: (state, getters) => {
             return getters.allUnitsOnType('exit')
+        },
+        unitOnTimeTile: (state, getters) => {
+            return getters.unitOnType('time')
         },
     },
 })
