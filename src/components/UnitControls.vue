@@ -26,7 +26,7 @@ export default {
                 'width': '260px',
                 'height': '120px',
                 'margin': '3px',
-                'color': this.unit.color,
+                'background-color': this.unit.color,
                 'border': '2px solid black',
                 'font-size': '60px',
             }
@@ -35,6 +35,7 @@ export default {
            gameInProgress: 'gameInProgress'
        }),
         ...mapState(['game']),
+        ...mapGetters(['userHasControl']),
     },
 }
 </script>

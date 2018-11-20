@@ -5,6 +5,7 @@
 <script>
 import mapConversions from '../mixins/MapConversions.js'
 import { mapGetters } from 'vuex'
+import { tileDict } from '../data/Map.js'
 
 export default {
     name: 'GameTile',
@@ -18,7 +19,7 @@ export default {
             if (!this.isWallCoord(this.row, this.column)) {
                 let size = this.gameBoard.tileSize
                 let style = {
-                    ...this.tile.style,
+                    ...this.dynamicStyle,
                     'width': `${size}px`,
                     'height': `${size}px`,
                     'left': `${this.screenColumn * size}px`,
@@ -33,7 +34,18 @@ export default {
                 return { 'display': 'none' }
             }
         },
-       ...mapGetters(['getTile','getNeighborWall']),
+        dynamicStyle() {
+            let floorStyle = tileDict['.'].style
+            if (this.getState === 'prize' && this.tile.type === 'exit') {
+                return floorStyle
+            }
+            else if (this.getState === 'exit' && this.tile.type === 'prize') {
+                return floorStyle
+            } else {
+                return this.tile.style
+            }
+        },
+       ...mapGetters(['getState', 'getTile','getNeighborWall']),
     },
     methods: {
         isWallCoord(row, column) {

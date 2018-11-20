@@ -32,7 +32,6 @@ const initialState = {
 }
 export default new Vuex.Store({
     state: {
-        db: db,
         game: {
             state: 'pending',
             timer: 30,
@@ -43,17 +42,29 @@ export default new Vuex.Store({
             flippable: false,
             activeTimeTiles: [],
         },
+        playerId: null,
+        players: [
+            {
+                id: 1,
+                controls: ['up', 'left'],
+            },
+            {
+                id: 2,
+                controls: ['down', 'right'],
+            },
+        ],
     },
     mutations: {
         createGame (state, initialState) {
+            state.playerId = 1
             let clonedState = JSON.parse(JSON.stringify(initialState))
-            state.game = clonedState
-            state.game.state = 'prize'
+            state.game = { ...clonedState, state: 'prize' }
         },
         updateState (state, stateName) {
             state.game.state = stateName
             let id = window.location.hash.substring(1)
             db.collection('games').doc(id).update({ state: state.game.state })
+            .catch((error) => console.error('Error updating game state: ', error))
         },
         moveUnit (state, payload) {
             payload.unit.row = payload.row
@@ -63,39 +74,36 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        createGame ({commit, state}) {
-            commit('createGame', initialState)
-            db.collection('boards')
-            .add(state.game.board)
-            .then(function(boardRef) {
-                return db.collection('games').add({
+        async createGame ({commit, state}) {
+            try {
+                commit('createGame', initialState)
+                let boardRef = await db.collection('boards').add({ ...state.game.board, tiles: JSON.stringify(state.game.board.tiles) })
+                let gameRef = await db.collection('games').add({
                     state: state.game.state,
                     units: state.game.units,
                     boardId: boardRef.id,
                 })
-            })
-            .then(function(gameRef) {
                 window.location.hash = '#' + gameRef.id
-            })
-            .catch(function(error) {
+            }
+            catch(error) {
                 console.error('Error creating game: ', error)
-            })
+            }
         },
-        joinGame ({commit, state}) {
+        async joinGame ({commit, state}) {
+            // If you didn't get assigned an id when creating, you are second player
+            if (!state.playerId) {
+                state.playerId = 2
+            }
             let id = window.location.hash.substring(1)
             let gameDocRef = db.collection('games').doc(id)
-
-            gameDocRef
-            .get()
-            .then(gameDoc => {
-                return db.collection('boards').doc(gameDoc.data().boardId).get()
-            })
-            .then(boardDoc => {
-                state.game.board = boardDoc.data()
-            })
-            .catch(function(error) {
+            try {
+                let gameDoc = await gameDocRef.get()
+                let boardDoc = await db.collection('boards').doc(gameDoc.data().boardId).get()
+                state.game.board = { ...boardDoc.data(), tiles: JSON.parse(boardDoc.data().tiles) }
+            }
+            catch(error) {
                 console.error('Error joining game: ', error)
-            })
+            }
 
             gameDocRef.onSnapshot(function(gameDoc) {
                 state.game.state = gameDoc.data().state
@@ -157,13 +165,20 @@ export default new Vuex.Store({
                 // DRY this up
                 let id = window.location.hash.substring(1)
                 db.collection('games').doc(id).update({ units: state.game.units })
-                .catch(function(error) {
-                    console.error('Error moving unit: ', error)
-                })
+                .catch((error) => console.error('Error moving unit: ', error))
             }
         },
     },
     getters: {
+        currentPlayer: (state) => {
+            return state.players.find(player => player.id === state.playerId)
+        },
+        userHasControl: (state, getters) => (control) => {
+            return getters.currentPlayer.controls.some(ctrl => ctrl === control)
+        },
+        getState: (state) => {
+            return state.game.state
+        },
         getTile: (state) => (row, column) => {
             let index = column + (row * state.game.board.columns)
             if (typeof state.game.board.tiles[index] === 'undefined') {
