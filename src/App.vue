@@ -9,10 +9,10 @@
                     <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="unit.color"></unit>
                 </div>
                 <div style="position: absolute; bottom: 0">
-                    <timer v-if="game.state === 'prize' || game.state === 'exit' || game.state === 'time'" :game-duration="game.timer"/>
+                    <timer v-if="gameInProgress" :game-duration="game.timer"/>
                     <unit-controls v-for="unit in units" :unit="unit" :key="unit.color"></unit-controls>
                 </div>
-                <div :style="overlayStyle" v-if="game.state === 'pending' || game.state === 'win' || game.state ==='lose'" v-on:click="createGame()">
+                <div :style="overlayStyle" v-if="!gameInProgress" v-on:click="createGame()">
                     <h1 v-if="game.state === 'win'">You won!</h1>
                     <h1 v-if="game.state === 'lose'">You lost!</h1>
                     <h2>Click to start</h2>
@@ -129,6 +129,7 @@ export default {
             units: state => state.game.units,
        }),
        ...mapGetters({
+           gameInProgress: 'gameInProgress'
        }),
        ...mapMutations({
            createGameBoard: 'createGameBoard',

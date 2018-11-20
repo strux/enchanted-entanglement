@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">⇧</button>
-        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">⇩</button>
-        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">⇦</button>
-        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">⇨</button>
+        <button v-on:click="moveUnitRequest('up')" :style="style" :disabled="!gameInProgress">⇧</button>
+        <button v-on:click="moveUnitRequest('down')" :style="style" :disabled="!gameInProgress">⇩</button>
+        <button v-on:click="moveUnitRequest('left')" :style="style" :disabled="!gameInProgress">⇦</button>
+        <button v-on:click="moveUnitRequest('right')" :style="style" :disabled="!gameInProgress">⇨</button>
     </div>
 </template>
 
@@ -31,9 +31,9 @@ export default {
                 'font-size': '60px',
             }
         },
-        disabled() {
-            return this.game.state !== 'prize' && this.game.state !== 'exit' && this.game.state !== 'time'
-        },
+       ...mapGetters({
+           gameInProgress: 'gameInProgress'
+       }),
         ...mapState(['game']),
     },
 }

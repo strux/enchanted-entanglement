@@ -28,6 +28,7 @@ const initialState = {
             column: 11,
         },
     ],
+    activeTimeTiles: [],
 }
 export default new Vuex.Store({
     state: {
@@ -39,6 +40,8 @@ export default new Vuex.Store({
                 tiles: [],
             },
             units: [],
+            flippable: false,
+            activeTimeTiles: [],
         },
     },
     mutations: {
@@ -55,6 +58,8 @@ export default new Vuex.Store({
         moveUnit (state, payload) {
             payload.unit.row = payload.row
             payload.unit.column = payload.column
+        },
+        saveActiveTimeTilePos (state, payload) {
         },
     },
     actions: {
@@ -98,7 +103,8 @@ export default new Vuex.Store({
             })
         },
         updateGameState ({commit, state, getters}) {
-            commit('updateState', getters.unitOnTimeTile ? 'time' : 'prize')
+            //if a unit is on a time tile set flippable flag
+            commit('saveActiveTimeTile', getters.unitOnTimeTile)
 
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
                 commit('updateState', 'exit')
@@ -109,6 +115,11 @@ export default new Vuex.Store({
         },
         loseGame ({commit}) {
             commit('updateState', 'lose')
+        },
+        flippedTimer ({commit}) {
+            let timeTile = activeTimeTiles.shift()
+            let tile = this.getTile(timeTile.column, timeTile.row)
+            tile.type = 'floor'
         },
         moveUnit ({ commit, state, getters }, payload) {
             let target = {}
@@ -202,6 +213,20 @@ export default new Vuex.Store({
         },
         unitOnTimeTile: (state, getters) => {
             return getters.unitOnType('time')
+        },
+        getTilesOfType: (state, getters) => (type) => {
+            let tilesOfType = []
+            state.game.units.forEach(unit => {
+                let tile = getters.getTile(unit.row, unit.column)
+                if (tile.type === type) {
+                    tilesOfType.push(unit.row, unit.column)
+                }
+            })
+            return tilesOfType
+        },
+        gameInProgress(state) {
+            let gameState = state.game.state
+            return gameState === 'prize' || gameState === 'exit'
         },
     },
 })
