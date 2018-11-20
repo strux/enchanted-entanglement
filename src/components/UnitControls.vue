@@ -32,9 +32,9 @@ export default {
                 'touch-action': 'manipulation',
             }
         },
-        disabled() {
-            return this.game.state !== 'prize' && this.game.state !== 'exit' && this.game.state !== 'time'
-        },
+       ...mapGetters({
+           gameInProgress: 'gameInProgress'
+       }),
         ...mapState(['game']),
         ...mapGetters(['userHasControl']),
     },

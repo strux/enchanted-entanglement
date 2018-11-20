@@ -5,7 +5,7 @@
         <p class="timertext" :style="style">
             {{minutes}}:{{seconds}}
         </p>
-        <button v-on:click="flip()" v-bind:disabled="gameState.state !=='time'" :style="buttonstyle">flip timer!</button>
+        <button v-on:click="flipTimer()" v-bind:disabled="gameState.state !=='time'" :style="buttonstyle">flip timer!</button>
 
     </div>
 </template>
@@ -64,6 +64,10 @@ export default {
         },
         reset: function() {
             this.countDown = this.gameDuration
+        },
+        flipTimer: function() {
+            this.$store.dispatch('flippedTimer')
+            this.flip()
         },
         flip: function() {
             this.countDown = this.gameDuration - this.countDown
