@@ -70,8 +70,6 @@ export default new Vuex.Store({
             payload.unit.row = payload.row
             payload.unit.column = payload.column
         },
-        saveActiveTimeTilePos (state, payload) {
-        },
     },
     actions: {
         async createGame ({commit, state}) {
@@ -112,7 +110,7 @@ export default new Vuex.Store({
         },
         updateGameState ({commit, state, getters}) {
             //if a unit is on a time tile set flippable flag
-            commit('saveActiveTimeTile', getters.unitOnTimeTile)
+            // commit('saveActiveTimeTile', getters.unitOnTimeTile)
 
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
                 commit('updateState', 'exit')
@@ -228,16 +226,6 @@ export default new Vuex.Store({
         },
         unitOnTimeTile: (state, getters) => {
             return getters.unitOnType('time')
-        },
-        getTilesOfType: (state, getters) => (type) => {
-            let tilesOfType = []
-            state.game.units.forEach(unit => {
-                let tile = getters.getTile(unit.row, unit.column)
-                if (tile.type === type) {
-                    tilesOfType.push(unit.row, unit.column)
-                }
-            })
-            return tilesOfType
         },
         gameInProgress(state) {
             let gameState = state.game.state
