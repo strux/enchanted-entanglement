@@ -57,7 +57,8 @@ export default {
                 --this.countDown
                 this.format()
                 if (this.countDown === 0) {
-                    this.$store.dispatch('loseGame')
+                    // Disabling temporarily
+                    // this.$store.dispatch('loseGame')
                     this.pause()
                 }
             }, 1000)

@@ -25,7 +25,7 @@ const initialState = {
             id: 2,
             color: 'green',
             row: 13,
-            column: 12,
+            column: 13,
         },
     ],
 }
@@ -33,7 +33,7 @@ export default new Vuex.Store({
     state: {
         game: {
             state: 'pending',
-            timer: 30,
+            timer: 1200,
             board: {
                 tiles: [],
             },
