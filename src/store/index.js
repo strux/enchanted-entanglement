@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 const initialState = {
     state: 'pending',
-    timer: 60,
+    timer: 1200,
     board: {
         tileSize: 89,
         rows: 25,
@@ -25,7 +25,7 @@ const initialState = {
             id: 2,
             color: 'green',
             row: 13,
-            column: 11,
+            column: 12,
         },
     ],
 }
