@@ -5,8 +5,9 @@ import mapTiles from '../data/Map.js'
 
 Vue.use(Vuex)
 
-const initialState = {
-    state: 'pending',
+const newGameState = {
+    id: null,
+    state: 'prize',
     timer: 1200,
     board: {
         tileSize: 89,
@@ -32,6 +33,7 @@ const initialState = {
 export default new Vuex.Store({
     state: {
         game: {
+            id: null,
             state: 'pending',
             timer: 1200,
             board: {
@@ -52,15 +54,19 @@ export default new Vuex.Store({
         ],
     },
     mutations: {
-        createGame (state, initialState) {
-            state.playerId = 1
-            let clonedState = JSON.parse(JSON.stringify(initialState))
-            state.game = { ...clonedState, state: 'prize' }
+        createGame (state, newGameState) {
+            let clonedState = JSON.parse(JSON.stringify(newGameState))
+            state.game = clonedState
+
+            localStorage.setItem(state.game.id, 1)
+            window.location.hash = state.game.id
+        },
+        updateGameId (state, gameId) {
+            state.game.id = gameId
         },
         updateState (state, stateName) {
             state.game.state = stateName
-            let id = window.location.hash.substring(1)
-            db.collection('games').doc(id).update({ state: state.game.state })
+            db.collection('games').doc(state.game.id).update({ state: state.game.state })
             // eslint-disable-next-line
             .catch((error) => console.error('Error updating game state: ', error))
         },
@@ -72,14 +78,14 @@ export default new Vuex.Store({
     actions: {
         async createGame ({commit, state}) {
             try {
-                commit('createGame', initialState)
-                let boardRef = await db.collection('boards').add({ ...state.game.board, tiles: JSON.stringify(state.game.board.tiles) })
+                // add commit for joining state
+                let boardRef = await db.collection('boards').add({ ...newGameState.board, tiles: JSON.stringify(newGameState.board.tiles) })
                 let gameRef = await db.collection('games').add({
-                    state: state.game.state,
-                    units: state.game.units,
+                    state: newGameState.state,
+                    units: newGameState.units,
                     boardId: boardRef.id,
                 })
-                window.location.hash = '#' + gameRef.id
+                commit('createGame', {...newGameState, id: gameRef.id})
             }
             catch(error) {
                 // eslint-disable-next-line
@@ -87,12 +93,13 @@ export default new Vuex.Store({
             }
         },
         async joinGame ({commit, state}) {
+            commit('updateGameId', window.location.hash.substring(1))
+            let gameDocRef = db.collection('games').doc(state.game.id)
+
             // If you didn't get assigned an id when creating, you are second player
-            if (!state.playerId) {
-                state.playerId = 2
-            }
-            let id = window.location.hash.substring(1)
-            let gameDocRef = db.collection('games').doc(id)
+            let playerId = localStorage.getItem(state.game.id)
+            state.playerId = playerId ? parseInt(playerId) : 2
+
             try {
                 let gameDoc = await gameDocRef.get()
                 let boardDoc = await db.collection('boards').doc(gameDoc.data().boardId).get()
@@ -153,8 +160,7 @@ export default new Vuex.Store({
                 commit('moveUnit', { unit: payload.unit, row: target.row, column: target.column })
 
                 // DRY this up
-                let id = window.location.hash.substring(1)
-                db.collection('games').doc(id).update({[`units.${payload.unit.id}`]: state.game.units[payload.unit.id]})
+                db.collection('games').doc(state.game.id).update({[`units.${payload.unit.id}`]: state.game.units[payload.unit.id]})
                 // eslint-disable-next-line
                 .catch((error) => console.error('Error moving unit: ', error))
             }
