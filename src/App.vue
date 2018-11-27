@@ -19,6 +19,9 @@
                     <h1 v-if="game.state === 'lose'">You lost!</h1>
                     <h2>Click to start</h2>
                 </div>
+                <div :style="overlayStyle" v-if="game.state === 'joining'">
+                    <h2>Joining game...</h2>
+                </div>
             </div>
         </div>
     </div>

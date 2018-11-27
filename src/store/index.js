@@ -57,18 +57,12 @@ export default new Vuex.Store({
         createGame (state, newGameState) {
             let clonedState = JSON.parse(JSON.stringify(newGameState))
             state.game = clonedState
-
-            localStorage.setItem(state.game.id, 1)
-            window.location.hash = state.game.id
         },
         updateGameId (state, gameId) {
             state.game.id = gameId
         },
-        updateState (state, stateName) {
+        updateGameState (state, stateName) {
             state.game.state = stateName
-            db.collection('games').doc(state.game.id).update({ state: state.game.state })
-            // eslint-disable-next-line
-            .catch((error) => console.error('Error updating game state: ', error))
         },
         moveUnit (state, payload) {
             payload.unit.row = payload.row
@@ -76,9 +70,9 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        async createGame ({commit, state}) {
+        async createGame ({state, commit}) {
             try {
-                // add commit for joining state
+                commit('updateGameState', 'joining')
                 let boardRef = await db.collection('boards').add({ ...newGameState.board, tiles: JSON.stringify(newGameState.board.tiles) })
                 let gameRef = await db.collection('games').add({
                     state: newGameState.state,
@@ -86,6 +80,8 @@ export default new Vuex.Store({
                     boardId: boardRef.id,
                 })
                 commit('createGame', {...newGameState, id: gameRef.id})
+                localStorage.setItem(state.game.id, 1)
+                window.location.hash = state.game.id
             }
             catch(error) {
                 // eslint-disable-next-line
@@ -93,6 +89,7 @@ export default new Vuex.Store({
             }
         },
         async joinGame ({commit, state}) {
+            commit('updateGameState', 'joining')
             commit('updateGameId', window.location.hash.substring(1))
             let gameDocRef = db.collection('games').doc(state.game.id)
 
@@ -116,15 +113,22 @@ export default new Vuex.Store({
             })
         },
         updateGameState ({commit, state, getters}) {
+            let newState = null
             if (state.game.state === 'prize' && getters.allUnitsOnPrize) {
-                commit('updateState', 'exit')
+                newState = 'exit'
             }
             if (state.game.state === 'exit' && getters.allUnitsOnExit) {
-                commit('updateState', 'win')
+                newState = 'win'
+            }
+            if (newState) {
+                commit('updateGameState', newState)
+                db.collection('games').doc(state.game.id).update({ state: newState })
+                // eslint-disable-next-line
+                .catch((error) => console.error('Error updating game state: ', error))
             }
         },
         loseGame ({commit}) {
-            commit('updateState', 'lose')
+            commit('updateGameState', 'lose')
         },
         moveUnit ({ commit, state, getters }, payload) {
             let target = {}
