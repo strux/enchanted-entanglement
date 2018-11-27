@@ -61,6 +61,7 @@ export default new Vuex.Store({
             state.game.state = stateName
             let id = window.location.hash.substring(1)
             db.collection('games').doc(id).update({ state: state.game.state })
+            // eslint-disable-next-line
             .catch((error) => console.error('Error updating game state: ', error))
         },
         moveUnit (state, payload) {
@@ -81,6 +82,7 @@ export default new Vuex.Store({
                 window.location.hash = '#' + gameRef.id
             }
             catch(error) {
+                // eslint-disable-next-line
                 console.error('Error creating game: ', error)
             }
         },
@@ -97,6 +99,7 @@ export default new Vuex.Store({
                 state.game.board = { ...boardDoc.data(), tiles: JSON.parse(boardDoc.data().tiles) }
             }
             catch(error) {
+                // eslint-disable-next-line
                 console.error('Error joining game: ', error)
             }
 
@@ -151,10 +154,8 @@ export default new Vuex.Store({
 
                 // DRY this up
                 let id = window.location.hash.substring(1)
-                let unitUpdate = {}
-                unitUpdate[`units.${payload.unit.id}`] = state.game.units[payload.unit.id]
-                console.log(unitUpdate)
                 db.collection('games').doc(id).update({[`units.${payload.unit.id}`]: state.game.units[payload.unit.id]})
+                // eslint-disable-next-line
                 .catch((error) => console.error('Error moving unit: ', error))
             }
         },

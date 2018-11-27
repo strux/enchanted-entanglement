@@ -33,7 +33,6 @@ import Unit from './components/Unit.vue'
 import UnitControls from './components/UnitControls.vue'
 import mapConversions from './mixins/MapConversions.js'
 import Timer from './components/Timer.vue'
-import db from './store/firestore.js'
 
 export default {
     name: 'app',
@@ -77,8 +76,7 @@ export default {
         joinGame() {
             this.$store.dispatch('joinGame')
         },
-        updateState(docRef) {
-            console.log('Document written with ID: ', docRef.id);
+        updateState() {
             this.game.state = 'prize'
             this.creatingGame = false
         },
