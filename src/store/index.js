@@ -14,20 +14,20 @@ const initialState = {
         columns: 25,
         tiles: mapTiles,
     },
-    units: [
-        {
+    units: {
+        1: {
             id: 1,
             color: 'red',
             row: 11,
             column: 11,
         },
-        {
+        2: {
             id: 2,
             color: 'green',
             row: 13,
             column: 13,
         },
-    ],
+    },
 }
 export default new Vuex.Store({
     state: {
@@ -151,7 +151,10 @@ export default new Vuex.Store({
 
                 // DRY this up
                 let id = window.location.hash.substring(1)
-                db.collection('games').doc(id).update({ units: state.game.units })
+                let unitUpdate = {}
+                unitUpdate[`units.${payload.unit.id}`] = state.game.units[payload.unit.id]
+                console.log(unitUpdate)
+                db.collection('games').doc(id).update({[`units.${payload.unit.id}`]: state.game.units[payload.unit.id]})
                 .catch((error) => console.error('Error moving unit: ', error))
             }
         },
@@ -187,7 +190,7 @@ export default new Vuex.Store({
             }
         },
         isUnitOnTile: (state) => (row, column) => {
-            return state.game.units.some(unit => unit.row === row && unit.column === column)
+            return Object.values(state.game.units).some(unit => unit.row === row && unit.column === column)
         },
         isOpenTile: (state, getters) => (row, column) => {
             let tile = getters.getTile(row, column)
@@ -196,7 +199,7 @@ export default new Vuex.Store({
                    !getters.isUnitOnTile(row, column)
         },
         allUnitsOnType: (state, getters) => (type) => {
-            return state.game.units.every(unit => {
+            return Object.values(state.game.units).every(unit => {
                 let tile = getters.getTile(unit.row, unit.column)
                 return tile.type === type && tile.unitId === unit.id
             })
