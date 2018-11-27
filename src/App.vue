@@ -48,6 +48,10 @@ export default {
     mixins: [mapConversions],
     beforeMount: function() {
         this.setScale()
+        document.addEventListener('touchmove', function(event) {
+            event = event.originalEvent || event
+           event.preventDefault();
+        }, false)
         window.addEventListener('hashchange', this.joinGame)
         if (window.location.hash.length > 1) {
             this.joinGame()
@@ -144,6 +148,8 @@ export default {
 body, html {
     margin: 0;
     padding: 0;
+    overflow: hidden;
+    position: fixed;
 }
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;

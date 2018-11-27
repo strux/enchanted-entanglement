@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button v-if="userHasControl('up')" v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">&#9650</button>
-        <button v-if="userHasControl('down')" v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">&#9660</button>
-        <button v-if="userHasControl('left')" v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">&#9668</button>
-        <button v-if="userHasControl('right')" v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">&#9658</button>
+        <button v-if="userHasControl('up')" v-on:click="moveUnitRequest('up')" :style="style" :disabled="disabled">&#9650;</button>
+        <button v-if="userHasControl('down')" v-on:click="moveUnitRequest('down')" :style="style" :disabled="disabled">&#9660;</button>
+        <button v-if="userHasControl('left')" v-on:click="moveUnitRequest('left')" :style="style" :disabled="disabled">&#9668;</button>
+        <button v-if="userHasControl('right')" v-on:click="moveUnitRequest('right')" :style="style" :disabled="disabled">&#9658;</button>
     </div>
 </template>
 
@@ -29,6 +29,7 @@ export default {
                 'background-color': this.unit.color,
                 'border': '2px solid black',
                 'font-size': '60px',
+                'touch-action': 'manipulation',
             }
         },
         disabled() {
