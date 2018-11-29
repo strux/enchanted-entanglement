@@ -9,9 +9,7 @@
                     <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="unit.color"></unit>
                 </div>
                 <div style="position: absolute; bottom: 0">
-                    <timer v-if="game.state === 'prize' || game.state === 'exit'" :game-duration="game.timer"/>
-                </div>
-                <div style="position: absolute; bottom: 0; right: 0">
+                    <timer v-if="gameInProgress" :game-duration="game.timer"/>
                     <unit-controls v-for="unit in units" :unit="unit" :key="unit.color"></unit-controls>
                 </div>
                 <div :style="overlayStyle" v-if="!gameInProgress" v-on:click="createGame()">

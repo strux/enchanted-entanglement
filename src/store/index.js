@@ -137,6 +137,11 @@ export default new Vuex.Store({
             let tile = this.getTile(timeTile.column, timeTile.row)
             tile.type = 'floor'
         },
+        flippedTimer ({commit}) {
+            let timeTile = activeTimeTiles.shift()
+            let tile = this.getTile(timeTile.column, timeTile.row)
+            tile.type = 'floor'
+        },
         moveUnit ({ commit, state, getters }, payload) {
             let target = {}
             let wall = {}
