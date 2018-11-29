@@ -40,6 +40,8 @@ export default new Vuex.Store({
                 tiles: [],
             },
             units: [],
+            flippable: false,
+            activeTimeTiles: [],
         },
         playerId: null,
         players: [
@@ -130,6 +132,16 @@ export default new Vuex.Store({
         loseGame ({commit}) {
             commit('updateGameState', 'lose')
         },
+        flippedTimer ({commit}) {
+            let timeTile = activeTimeTiles.shift()
+            let tile = this.getTile(timeTile.column, timeTile.row)
+            tile.type = 'floor'
+        },
+        flippedTimer ({commit}) {
+            let timeTile = activeTimeTiles.shift()
+            let tile = this.getTile(timeTile.column, timeTile.row)
+            tile.type = 'floor'
+        },
         moveUnit ({ commit, state, getters }, payload) {
             let target = {}
             let wall = {}
@@ -215,11 +227,24 @@ export default new Vuex.Store({
                 return tile.type === type && tile.unitId === unit.id
             })
         },
+        unitOnType: (state, getters) => (type) => {
+            return state.game.units.some(unit => {
+                let tile = getters.getTile(unit.row, unit.column)
+                return tile.type === type
+            })
+        },
         allUnitsOnPrize: (state, getters) => {
             return getters.allUnitsOnType('prize')
         },
         allUnitsOnExit: (state, getters) => {
             return getters.allUnitsOnType('exit')
+        },
+        unitOnTimeTile: (state, getters) => {
+            return getters.unitOnType('time')
+        },
+        gameInProgress(state) {
+            let gameState = state.game.state
+            return gameState === 'prize' || gameState === 'exit'
         },
     },
 })
