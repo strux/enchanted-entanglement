@@ -7,8 +7,9 @@ Vue.use(Vuex)
 
 const newGameState = {
     id: null,
-    state: 'prize',
+    state: 'lobby',
     timer: 1200,
+    playersReady: [0,0],
     board: {
         tileSize: 89,
         rows: 25,
@@ -40,8 +41,7 @@ export default new Vuex.Store({
                 tiles: [],
             },
             units: [],
-            flippable: false,
-            activeTimeTiles: [],
+            playersReady: [0,0],
         },
         playerId: null,
         players: [
@@ -70,6 +70,9 @@ export default new Vuex.Store({
             payload.unit.row = payload.row
             payload.unit.column = payload.column
         },
+        updatePlayerReady (state, playerId) {
+            state.game.playersReady[playerId - 1] = 1
+        },
     },
     actions: {
         async createGame ({state, commit}) {
@@ -80,6 +83,7 @@ export default new Vuex.Store({
                     state: newGameState.state,
                     units: newGameState.units,
                     boardId: boardRef.id,
+                    playersReady: newGameState.playersReady
                 })
                 commit('createGame', {...newGameState, id: gameRef.id})
                 localStorage.setItem(state.game.id, 1)
@@ -112,6 +116,7 @@ export default new Vuex.Store({
             gameDocRef.onSnapshot(function(gameDoc) {
                 state.game.state = gameDoc.data().state
                 state.game.units = gameDoc.data().units
+                state.game.playersReady = gameDoc.data().playersReady
             })
         },
         updateGameState ({commit, state, getters}) {
@@ -122,6 +127,10 @@ export default new Vuex.Store({
             if (state.game.state === 'exit' && getters.allUnitsOnExit) {
                 newState = 'win'
             }
+            if (getters.allPlayersReady && state.game.state === 'lobby') {
+                newState = 'prize'
+            }
+
             if (newState) {
                 commit('updateGameState', newState)
                 db.collection('games').doc(state.game.id).update({ state: newState })
@@ -132,16 +141,14 @@ export default new Vuex.Store({
         loseGame ({commit}) {
             commit('updateGameState', 'lose')
         },
-        flippedTimer ({commit}) {
-            let timeTile = activeTimeTiles.shift()
-            let tile = this.getTile(timeTile.column, timeTile.row)
-            tile.type = 'floor'
-        },
-        flippedTimer ({commit}) {
-            let timeTile = activeTimeTiles.shift()
-            let tile = this.getTile(timeTile.column, timeTile.row)
-            tile.type = 'floor'
-        },
+        readyPlayer ({commit, state}, payload) {
+            commit('updatePlayerReady', payload.playerId)
+
+            // DRY this up
+            db.collection('games').doc(state.game.id).update({playersReady: state.game.playersReady})
+            // eslint-disable-next-line
+            .catch((error) => console.error('Error players ready ', error))
+        },  
         moveUnit ({ commit, state, getters }, payload) {
             let target = {}
             let wall = {}
@@ -181,6 +188,7 @@ export default new Vuex.Store({
                 .catch((error) => console.error('Error moving unit: ', error))
             }
         },
+
     },
     getters: {
         currentPlayer: (state) => {
@@ -188,6 +196,14 @@ export default new Vuex.Store({
         },
         userHasControl: (state, getters) => (control) => {
             return getters.currentPlayer.controls.some(ctrl => ctrl === control)
+        },
+        getPlayerReadyStatus: (state) => (playerId) => {
+            return state.game.playersReady[playerId - 1]
+        },
+        allPlayersReady: (state) => {
+            return state.game.playersReady.every(player => {
+                return player === 1
+            })
         },
         getState: (state) => {
             return state.game.state
