@@ -1,11 +1,14 @@
 <template>
     <div class="lobby">
-        I am the lobby.
-        {{ playerId === 1 ? 'I am the host' : 'I am the guest'}}
-            You:
-            <button v-on:click="Ready()" v-bind:disabled="pressed" :style="buttonstyle">{{ ready }}</button>
-            Friend:
-            <button v-bind:disabled="true" :style="buttonstyle">{{ OtherPlayerReady() ? 'ready' : 'start'}}</button>
+        <p>
+            I am the lobby.
+            <!-- Debugging purposes -->
+            {{ playerId === 1 ? 'I am the creator' : 'I am the guest'}}
+        </p>
+        You:
+        <button v-on:click="Ready()" v-bind:disabled="pressed" :style="buttonstyle">{{ ready }}</button>
+        Friend:
+        <button v-bind:disabled="true" :style="buttonstyle">{{ OtherPlayerReady() ? 'ready' : 'start'}}</button>
     </div>
 </template>
 
@@ -21,14 +24,11 @@ export default {
             pressed: false
         }
     },
-    beforeMount: function () {
-        
-    },
     computed: {
         buttonstyle() {
             return  {
-                'width': '460px',
-                'height': '320px',
+                'width': '360px',
+                'height': '220px',
                 'margin': '3px',
                 'font-size': '60px'
             }
