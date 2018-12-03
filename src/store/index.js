@@ -5,17 +5,30 @@ import mapTiles from '../data/Map.js'
 
 Vue.use(Vuex)
 
+let playerData = [
+    {
+        id: 1,
+        controls: ['up', 'left'],
+        ready: 0
+    },
+    {
+        id: 2,
+        controls: ['down', 'right'],
+        ready: 0
+    }
+]
+
 const newGameState = {
     id: null,
     state: 'lobby',
     timer: 1200,
-    playersReady: [0,0],
     board: {
         tileSize: 89,
         rows: 25,
         columns: 25,
         tiles: mapTiles,
     },
+    players: playerData,
     units: {
         1: {
             id: 1,
@@ -41,19 +54,9 @@ export default new Vuex.Store({
                 tiles: [],
             },
             units: [],
-            playersReady: [0,0],
         },
         playerId: null,
-        players: [
-            {
-                id: 1,
-                controls: ['up', 'left'],
-            },
-            {
-                id: 2,
-                controls: ['down', 'right'],
-            },
-        ],
+        players: playerData,
     },
     mutations: {
         createGame (state, newGameState) {
@@ -71,7 +74,7 @@ export default new Vuex.Store({
             payload.unit.column = payload.column
         },
         updatePlayerReady (state, playerId) {
-            state.game.playersReady[playerId - 1] = 1
+            state.players[playerId - 1].ready = 1
         },
     },
     actions: {
@@ -83,7 +86,7 @@ export default new Vuex.Store({
                     state: newGameState.state,
                     units: newGameState.units,
                     boardId: boardRef.id,
-                    playersReady: newGameState.playersReady
+                    playerInfo: state.players
                 })
                 commit('createGame', {...newGameState, id: gameRef.id})
                 localStorage.setItem(state.game.id, 1)
@@ -116,7 +119,7 @@ export default new Vuex.Store({
             gameDocRef.onSnapshot(function(gameDoc) {
                 state.game.state = gameDoc.data().state
                 state.game.units = gameDoc.data().units
-                state.game.playersReady = gameDoc.data().playersReady
+                state.players = gameDoc.data().playerInfo
             })
         },
         updateGameState ({commit, state, getters}) {
@@ -145,7 +148,7 @@ export default new Vuex.Store({
             commit('updatePlayerReady', payload.playerId)
 
             // DRY this up
-            db.collection('games').doc(state.game.id).update({playersReady: state.game.playersReady})
+            db.collection('games').doc(state.game.id).update({playerInfo: state.players})
             // eslint-disable-next-line
             .catch((error) => console.error('Error players ready ', error))
         },  
@@ -198,11 +201,11 @@ export default new Vuex.Store({
             return getters.currentPlayer.controls.some(ctrl => ctrl === control)
         },
         getPlayerReadyStatus: (state) => (playerId) => {
-            return state.game.playersReady[playerId - 1]
+            return state.players.find(player => player.id === playerId).ready
         },
         allPlayersReady: (state) => {
-            return state.game.playersReady.every(player => {
-                return player === 1
+            return state.players.every(player => {
+                return player.ready === 1
             })
         },
         getState: (state) => {
