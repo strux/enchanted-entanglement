@@ -12,6 +12,7 @@
                     <timer v-if="gameInProgress" :game-duration="game.timer"/>
                     <unit-controls v-for="unit in units" :unit="unit" :key="unit.color"></unit-controls>
                 </div>
+
                 <div :style="overlayStyle" v-if="!gameInProgress" v-on:click="createGame()">
                     <h1 v-if="game.state === 'win'">You won!</h1>
                     <h1 v-if="game.state === 'lose'">You lost!</h1>
@@ -20,6 +21,7 @@
                 <div :style="overlayStyle" v-if="game.state === 'joining'">
                     <h2>Joining game...</h2>
                 </div>
+                <lobby :style="overlayStyle" v-if="game.state === 'lobby'"/>
             </div>
         </div>
     </div>
@@ -34,6 +36,7 @@ import Unit from './components/Unit.vue'
 import UnitControls from './components/UnitControls.vue'
 import mapConversions from './mixins/MapConversions.js'
 import Timer from './components/Timer.vue'
+import Lobby from './components/Lobby.vue'
 
 export default {
     name: 'app',
@@ -42,6 +45,7 @@ export default {
         Unit,
         UnitControls,
         Timer,
+        Lobby
     },
     mixins: [mapConversions],
     beforeMount: function() {

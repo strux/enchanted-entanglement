@@ -5,9 +5,22 @@ import mapTiles from '../data/Map.js'
 
 Vue.use(Vuex)
 
+let playerData = [
+    {
+        id: 1,
+        controls: ['up', 'left'],
+        ready: 0
+    },
+    {
+        id: 2,
+        controls: ['down', 'right'],
+        ready: 0
+    }
+]
+
 const newGameState = {
     id: null,
-    state: 'prize',
+    state: 'lobby',
     timer: 1200,
     board: {
         tileSize: 89,
@@ -15,6 +28,7 @@ const newGameState = {
         columns: 25,
         tiles: mapTiles,
     },
+    players: playerData,
     units: {
         1: {
             id: 1,
@@ -40,20 +54,9 @@ export default new Vuex.Store({
                 tiles: [],
             },
             units: [],
-            flippable: false,
-            activeTimeTiles: [],
         },
         playerId: null,
-        players: [
-            {
-                id: 1,
-                controls: ['up', 'left'],
-            },
-            {
-                id: 2,
-                controls: ['down', 'right'],
-            },
-        ],
+        players: playerData,
     },
     mutations: {
         createGame (state, newGameState) {
@@ -70,6 +73,9 @@ export default new Vuex.Store({
             payload.unit.row = payload.row
             payload.unit.column = payload.column
         },
+        updatePlayerReady (state, playerId) {
+            state.players[playerId - 1].ready = 1
+        },
     },
     actions: {
         async createGame ({state, commit}) {
@@ -80,6 +86,7 @@ export default new Vuex.Store({
                     state: newGameState.state,
                     units: newGameState.units,
                     boardId: boardRef.id,
+                    playerInfo: state.players
                 })
                 commit('createGame', {...newGameState, id: gameRef.id})
                 localStorage.setItem(state.game.id, 1)
@@ -112,6 +119,7 @@ export default new Vuex.Store({
             gameDocRef.onSnapshot(function(gameDoc) {
                 state.game.state = gameDoc.data().state
                 state.game.units = gameDoc.data().units
+                state.players = gameDoc.data().playerInfo
             })
         },
         updateGameState ({commit, state, getters}) {
@@ -122,6 +130,10 @@ export default new Vuex.Store({
             if (state.game.state === 'exit' && getters.allUnitsOnExit) {
                 newState = 'win'
             }
+            if (getters.allPlayersReady && state.game.state === 'lobby') {
+                newState = 'prize'
+            }
+
             if (newState) {
                 commit('updateGameState', newState)
                 db.collection('games').doc(state.game.id).update({ state: newState })
@@ -132,16 +144,14 @@ export default new Vuex.Store({
         loseGame ({commit}) {
             commit('updateGameState', 'lose')
         },
-        flippedTimer ({commit}) {
-            let timeTile = activeTimeTiles.shift()
-            let tile = this.getTile(timeTile.column, timeTile.row)
-            tile.type = 'floor'
-        },
-        flippedTimer ({commit}) {
-            let timeTile = activeTimeTiles.shift()
-            let tile = this.getTile(timeTile.column, timeTile.row)
-            tile.type = 'floor'
-        },
+        readyPlayer ({commit, state}, payload) {
+            commit('updatePlayerReady', payload.playerId)
+
+            // DRY this up
+            db.collection('games').doc(state.game.id).update({playerInfo: state.players})
+            // eslint-disable-next-line
+            .catch((error) => console.error('Error players ready ', error))
+        },  
         moveUnit ({ commit, state, getters }, payload) {
             let target = {}
             let wall = {}
@@ -181,6 +191,7 @@ export default new Vuex.Store({
                 .catch((error) => console.error('Error moving unit: ', error))
             }
         },
+
     },
     getters: {
         currentPlayer: (state) => {
@@ -188,6 +199,14 @@ export default new Vuex.Store({
         },
         userHasControl: (state, getters) => (control) => {
             return getters.currentPlayer.controls.some(ctrl => ctrl === control)
+        },
+        getPlayerReadyStatus: (state) => (playerId) => {
+            return state.players.find(player => player.id === playerId).ready
+        },
+        allPlayersReady: (state) => {
+            return state.players.every(player => {
+                return player.ready === 1
+            })
         },
         getState: (state) => {
             return state.game.state
