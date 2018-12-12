@@ -24,6 +24,16 @@ export default {
             pressed: false
         }
     },
+    beforeMount: function () {
+        //player id has already been set-- clear out the ready flag for the client
+        if (this.playerId) {
+            this.$store.dispatch('updateReadyPlayer', {playerId: this.playerId, readyFlag: 0})
+            this.$store.dispatch('updateReadyPlayer', {playerId: this.GetOtherPlayerId(), readyFlag: 0})
+        }
+    },
+    beforeDestroy: function() {
+        console.log('Goodbye cruel world')
+    },
     computed: {
         buttonstyle() {
             return  {
@@ -44,13 +54,16 @@ export default {
     methods: {
         Ready() {
             this.ready = 'ready'
-            this.$store.dispatch('readyPlayer', {playerId: this.playerId})
+            this.$store.dispatch('updateReadyPlayer', {playerId: this.playerId, readyFlag: 1})
             this.pressed = true
             this.$store.dispatch('updateGameState')
 
         },
         OtherPlayerReady() {
-            return this.getPlayerReadyStatus(this.playerId === 1 ? 2 : 1)
+            return this.getPlayerReadyStatus(this.GetOtherPlayerId())
+        },
+        GetOtherPlayerId() {
+            return (this.playerId === 1) ? 2 : 1
         }
     }
 }
