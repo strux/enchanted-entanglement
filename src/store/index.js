@@ -32,13 +32,13 @@ const newGameState = {
     units: {
         1: {
             id: 1,
-            color: 'red',
+            color: 'hsl(26, 100%, 55%)',
             row: 11,
             column: 11,
         },
         2: {
             id: 2,
-            color: 'green',
+            color: 'hsl(261, 100%, 55%)',
             row: 13,
             column: 13,
         },

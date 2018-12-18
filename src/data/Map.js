@@ -1,6 +1,6 @@
 const mapSource = [
     '#########################',
-    '#.###..g#...###.#####R###',
+    '#.###..p#...###.#####O###',
     '#.###.###.#.###.#####.###',
     '#.....#...#.....###...###',
     '#.#####.###.#.#.###.#####',
@@ -18,11 +18,11 @@ const mapSource = [
     '###.#######.#######.#####',
     '###...###.......###.###.#',
     '#####.###.#####.###.###.#',
-    '#...#.###.#####.....#r..#',
+    '#...#.###.#####.....#o..#',
     '#.#.#.###.#####.###.###.#',
     '#.#.#.....#####.###.###.#',
     '#.#.#.###.#####.###.###.#',
-    '#G#.....#.......#.......#',
+    '#P#.....#.......#.......#',
     '#########################',
 ]
 
@@ -31,41 +31,48 @@ export const tileDict = {
         type: 'wall',
         collide: true,
         style: {
-            'background-color': 'hsl(0, 0%, 50%)',
+            'background-color': 'hsl(100, 35%, 45%)',
         },
     },
     '.': {
         type: 'floor',
         collide: false,
         style: {
-            'background-color': 'hsl(0, 0%, 90%)',
+            'background-color': 'hsl(108, 30%, 70%)',
         },
     },
-    'r': {
+    'o': {
         type: 'prize',
         collide: false,
         unitId: 1,
-        color: 'red',
         style: {
-            'background-color': 'hsl(0, 100%, 80%)',
+            'background-color': 'hsl(29, 100%, 75%)',
         },
     },
-    'g': {
+    'O': {
+        type: 'exit',
+        collide: false,
+        unitId: 1,
+        style: {
+            'background-color': 'hsl(29, 100%, 65%)',
+        },
+    },
+    'p': {
         type: 'prize',
         collide: false,
         unitId: 2,
         color: 'green',
         style: {
-            'background-color': 'hsl(130, 70%, 50%)',
+            'background-color': 'hsl(265, 100%, 85%)',
         },
     },
-    'R': {
+    'P': {
         type: 'exit',
         collide: false,
-        unitId: 1,
-        color: 'red',
+        unitId: 2,
+        color: 'green',
         style: {
-            'background-color': 'hsl(0, 100%, 70%)',
+            'background-color': 'hsl(265, 100%, 75%)',
         },
     },
     'T': {
@@ -74,15 +81,6 @@ export const tileDict = {
         color: 'blue',
         style: {
             'background-color': 'hsl(240, 60%, 70%)',
-        },
-    },
-    'G': {
-        type: 'exit',
-        collide: false,
-        unitId: 2,
-        color: 'green',
-        style: {
-            'background-color': 'hsl(130, 70%, 40%)',
         },
     },
 }

@@ -6,11 +6,11 @@
                     <div class="row" v-for="(val, rowIndex) in gameBoard.rows" :key="rowIndex">
                         <game-tile v-for="(val, columnIndex) in gameBoard.columns" :row="rowIndex" :column="columnIndex" :gameBoard="gameBoard" :key="columnIndex"></game-tile>
                     </div>
-                    <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="unit.color"></unit>
+                    <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="'unit' + unit.id"></unit>
                 </div>
                 <div style="position: absolute; bottom: 0">
                     <timer v-if="gameInProgress" :game-duration="game.timer"/>
-                    <unit-controls v-for="unit in units" :unit="unit" :key="unit.color"></unit-controls>
+                    <unit-controls v-for="unit in units" :unit="unit" :key="'control' + unit.id"></unit-controls>
                 </div>
 
                 <div :style="overlayStyle" v-if="!gameInProgress" v-on:click="createGame()">
@@ -125,10 +125,10 @@ export default {
         },
         boardStyle() {
             let style = {
-                'width': `${this.screenWidth * this.gameBoard.tileSize}px`,
-                'height': `${this.screenHeight * this.gameBoard.tileSize}px`,
+                'width': `${Math.floor(this.gameBoard.columns / 2) * this.gameBoard.tileSize}px`,
+                'height': `${Math.floor(this.gameBoard.rows / 2) * this.gameBoard.tileSize}px`,
                 'position': 'relative',
-                'background-color': 'hsl(0, 0%, 90%)',
+                'background-color': 'hsl(108, 30%, 70%)',
             }
             return style
         },
