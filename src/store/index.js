@@ -23,7 +23,7 @@ const newGameState = {
     state: 'lobby',
     timer: 1200,
     board: {
-        tileSize: 89,
+        tileSize: 84,
         rows: 25,
         columns: 25,
         tiles: mapTiles,

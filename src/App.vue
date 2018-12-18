@@ -2,6 +2,7 @@
     <div id="app">
         <div id="content-scaler" :style="scalerStyle">
             <div :style="contentStyle">
+                <img src="./assets/pup_bg.png" style="position: absolute; width: 1440px; left: -185px; top: -360px" />
                 <div :style="boardStyle">
                     <div class="row" v-for="(val, rowIndex) in gameBoard.rows" :key="rowIndex">
                         <game-tile v-for="(val, columnIndex) in gameBoard.columns" :row="rowIndex" :column="columnIndex" :gameBoard="gameBoard" :key="columnIndex"></game-tile>
@@ -73,7 +74,7 @@ export default {
     },
     methods: {
         setScale() {
-            this.scale = Math.min((window.innerWidth / 1079), (window.innerHeight / 1920))
+            this.scale = Math.min((window.innerWidth / 1070), (window.innerHeight / 1920))
         },
         createGame() {
             if (!this.creatingGame) {
@@ -106,7 +107,12 @@ export default {
                 'left': '50%',
                 'top': '50%',
                 'transform-origin': 'center center',
+                'overflow': 'visible',
                 //'background-image': `url(${require('./assets/bg_test.png')})`,
+                //'background-image': `url(${require('./assets/pup_bg.png')})`,
+                //'background-size': 'cover',
+                //'background-repeat': 'no-repeat',
+                //'background-position': '50% 50%',
             }
         },
         overlayStyle() {
@@ -127,8 +133,11 @@ export default {
             let style = {
                 'width': `${Math.floor(this.gameBoard.columns / 2) * this.gameBoard.tileSize}px`,
                 'height': `${Math.floor(this.gameBoard.rows / 2) * this.gameBoard.tileSize}px`,
-                'position': 'relative',
+                'position': 'absolute',
                 'background-color': 'hsl(108, 30%, 70%)',
+                'transform': 'translate(-50%)',
+                'left': '50%',
+                'top': '30px',
             }
             return style
         },

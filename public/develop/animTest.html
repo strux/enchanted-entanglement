@@ -1,0 +1,124 @@
+<HTML>
+    <script src="https://rawgit.com/web-animations/web-animations-js/master/web-animations.min.js"></script>
+    <style>
+	#pug {
+	    width: 160px; height: 256px;
+	    background-color: #eeeeee;
+	    position: relative;
+	}
+    #pugHead {
+        width: 128px; height: 128px;
+        transform-origin: 50% 90%;
+        background: url('/assets/pug_head_sheet_0.png') left top;
+	    position: absolute;
+	    z-index: 2;
+	    left: 16px; top: 59px; /*top: 49px sitting height*/
+    }
+	#pugBlink {
+        width: 128px; height: 128px;
+        background: url('pug_head_sheet_0.png') left top;
+		background-position-y: -128px;
+	    position: absolute;
+	    z-index: 3;
+	    left: 0px; top: 0px;
+    }
+	#pugBody {
+	    width: 140px; height: 150px;
+        transform-origin: 50% 90%;
+        background: url('pug_body_sheet_0.png') left top;
+	    position: absolute;
+	    left: 9px; top: 102px;
+	}
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event) {
+            //timing
+			var breath = 400;
+			var blinkTime =  {easing: 'steps(5)', duration: 498,     iterations: 1}
+            var breatheTime ={easing: 'ease-out', duration: breath,  iterations: Infinity}
+            var pantTime =   {easing: 'steps(4)', duration: 333,     iterations: Infinity}
+            var sit2runTime ={easing: 'steps(3)', duration: 250,     iterations: 1}
+            var runTime =    {easing: 'steps(4)', duration: breath,  iterations: Infinity, delay: 250}
+            
+            //animations
+            var blinkAnim = document.getElementById('pugBlink').animate(
+                [
+                    { backgroundPositionX: '0px'    },
+                    { backgroundPositionX: '-128px' },
+                    { backgroundPositionX: '-256px' },
+                    { backgroundPositionX: '-384px' },
+					{ backgroundPositionX: '-256px' },
+					{ backgroundPositionX: '0px'    }
+                ],blinkTime);
+
+			/*var bodybreatheAnim = document.getElementById('pugBody').animate(
+                [
+                    	{ transform: 'scaleY(1)'  },
+                    	{ transform: 'scaleY(1.02)'},
+                    	{ transform: 'scaleY(1)'  },
+                ], breatheTime);
+            */
+            var bodySitToRunAnim = document.getElementById('pugBody').animate(
+                [
+                    { backgroundPositionX: '0px' },
+                    { backgroundPositionX: '-140px' },
+                    { backgroundPositionX: '-280px' },
+                    { backgroundPositionX: '-420px' }
+                ],sit2runTime);
+            
+            var bodyRunAnim = document.getElementById('pugBody').animate(
+                [
+                    { backgroundPositionX: '-420px' },
+                    { backgroundPositionX: '-560px' },
+                    { backgroundPositionX: '-700px' },
+                    { backgroundPositionX: '-840px' },
+					{ backgroundPositionX: '-420px' }
+                ], runTime);
+            
+            /*
+			var headbreatheAnim = document.getElementById('pugHead').animate(
+                [
+						{ transform: 'scaleY(.99)'},
+                    	{ transform: 'scaleY(.98)', offset: 0.25},
+                    	{ transform: 'scaleY(1)', offset: 0.75},
+						{ transform: 'scaleY(.99)'}
+                ], breatheTime);
+            */
+            var headSitToRunAnim = document.getElementById('pugHead').animate(
+                [
+						{ top: '49px'},
+                        { top: '55px'}
+                ], sit2runTime);
+            
+            var headRunAnim = document.getElementById('pugHead').animate(
+                [
+						{ top: '55px'},
+                    	{ top: '59px'},
+                    	{ top: '54px'},
+						{ top: '60px'},
+                        { top: '55px'}
+                ], runTime);
+            
+			var headPantAnim = document.getElementById('pugHead').animate(
+                [
+					{ backgroundPositionX: '-128px' },
+					{ backgroundPositionX: '-256px' },
+					{ backgroundPositionX: '-384px' },
+					{ backgroundPositionX: '-512px' },
+					{ backgroundPositionX: '-128px' }
+                ], pantTime);
+            
+			function getRandomMsRange(min, max) { return Math.random() * (max - min) + min;	}
+            
+			blinkAnim.onfinish = function(){ setTimeout(blinkAnim.play.bind(this), getRandomMsRange(0, 5000)); }
+        });
+    </script>
+    <body>
+	<div id="pug">
+		<div id="pugHead">
+			<div id="pugBlink"></div>
+		</div>
+	    <div id="pugBody"></div>
+	</div>
+    </body>
+</HTML>
