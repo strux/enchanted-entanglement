@@ -198,6 +198,7 @@ export default new Vuex.Store({
             return state.players.find(player => player.id === state.playerId)
         },
         userHasControl: (state, getters) => (control) => {
+            if (!getters.currentPlayer) return false
             return getters.currentPlayer.controls.some(ctrl => ctrl === control)
         },
         getPlayerReadyStatus: (state) => (playerId) => {
@@ -247,7 +248,7 @@ export default new Vuex.Store({
             })
         },
         unitOnType: (state, getters) => (type) => {
-            return state.game.units.some(unit => {
+            return Object.values(state.game.units).some(unit => {
                 let tile = getters.getTile(unit.row, unit.column)
                 return tile.type === type
             })
