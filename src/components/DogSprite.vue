@@ -1,10 +1,10 @@
 <template>
-        <div class="dog">
-            <div class="dogHead">
-                <div class="dogBlink"></div>
-            </div>
-            <div class="dogBody"></div>
+    <div class="dog" v-on:click="blink">
+        <div class="dogHead">
+            <div class="dogBlink"></div>
         </div>
+        <div class="dogBody"></div>
+    </div>
 </template>
 
 <script>
@@ -18,9 +18,63 @@ export default {
         return {
         }
     },
+    mounted: function() {
+        let breath = 400;
+        let pantTime =    { easing: 'steps(4)', duration: 333,     iterations: Infinity }
+        let sit2runTime = { easing: 'steps(3)', duration: 250,     iterations: 1 }
+        let runTime =     { easing: 'steps(4)', duration: breath,  iterations: Infinity, delay: 250 }
+
+        this.$el.getElementsByClassName('dogBody')[0].animate([
+                { backgroundPositionX: '0px' },
+                { backgroundPositionX: '-140px' },
+                { backgroundPositionX: '-280px' },
+                { backgroundPositionX: '-420px' }
+            ], sit2runTime);
+
+        this.$el.getElementsByClassName('dogBody')[0].animate([
+                { backgroundPositionX: '-420px' },
+                { backgroundPositionX: '-560px' },
+                { backgroundPositionX: '-700px' },
+                { backgroundPositionX: '-840px' },
+                { backgroundPositionX: '-420px' }
+            ], runTime);
+
+        this.$el.getElementsByClassName('dogHead')[0].animate([
+                { top: '49px'},
+                { top: '55px'}
+            ], sit2runTime);
+
+        this.$el.getElementsByClassName('dogHead')[0].animate([
+                { top: '55px'},
+                { top: '59px'},
+                { top: '54px'},
+                { top: '60px'},
+                { top: '55px'}
+            ], runTime);
+
+        this.$el.getElementsByClassName('dogHead')[0].animate([
+                { backgroundPositionX: '-128px' },
+                { backgroundPositionX: '-256px' },
+                { backgroundPositionX: '-384px' },
+                { backgroundPositionX: '-512px' },
+                { backgroundPositionX: '-128px' }
+            ], pantTime);
+    },
     computed: {
     },
     methods: {
+        blink() {
+            let blinkTime =  { easing: 'steps(5)', duration: 498, iterations: 1 }
+            let el = this.$el.getElementsByClassName('dogBlink')[0]
+            el.animate([
+                { backgroundPositionX: '0px'    },
+                { backgroundPositionX: '-128px' },
+                { backgroundPositionX: '-256px' },
+                { backgroundPositionX: '-384px' },
+                { backgroundPositionX: '-256px' },
+                { backgroundPositionX: '0px'    }
+            ], blinkTime);
+        },
     },
 }
 </script>

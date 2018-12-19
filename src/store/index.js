@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import db from './firestore.js'
 import mapTiles from '../data/Map.js'
+import 'web-animations-js'
 
 Vue.use(Vuex)
 
