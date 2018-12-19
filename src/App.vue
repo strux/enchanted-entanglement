@@ -9,10 +9,15 @@
                     </div>
                     <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="'unit' + unit.id"></unit>
                 </div>
+
+                <game-ui :units="units" :game-duration="game.timer" :game-in-progress="gameInProgress"></game-ui>
+
+                <!--
                 <div style="position: absolute; bottom: 0">
                     <timer v-if="gameInProgress" :game-duration="game.timer"/>
                     <unit-controls v-for="unit in units" :unit="unit" :key="'control' + unit.id"></unit-controls>
                 </div>
+                -->
 
                 <div :style="overlayStyle" v-if="!gameInProgress" v-on:click="createGame()">
                     <h1 v-if="game.state === 'win'">You won!</h1>
@@ -32,11 +37,10 @@
 import { mapState } from 'vuex'
 import { mapGetters } from 'vuex'
 import { mapMutations } from 'vuex'
+import mapConversions from './mixins/MapConversions.js'
 import GameTile from './components/GameTile.vue'
 import Unit from './components/Unit.vue'
-import UnitControls from './components/UnitControls.vue'
-import mapConversions from './mixins/MapConversions.js'
-import Timer from './components/Timer.vue'
+import GameUi from './components/GameUi.vue'
 import Lobby from './components/Lobby.vue'
 
 export default {
@@ -44,8 +48,7 @@ export default {
     components: {
         GameTile,
         Unit,
-        UnitControls,
-        Timer,
+        GameUi,
         Lobby
     },
     mixins: [mapConversions],
