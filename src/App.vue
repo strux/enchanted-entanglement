@@ -2,23 +2,14 @@
     <div id="app">
         <div id="content-scaler" :style="scalerStyle">
             <div :style="contentStyle">
-                <img src="./assets/pup_bg.png" style="position: absolute; width: 1440px; left: -185px; top: -360px" />
+                <img src="./assets/pup_bg.png" style="position: absolute; width: 1440px; left: -185px; top: -400px" />
                 <div :style="boardStyle">
                     <div class="row" v-for="(val, rowIndex) in gameBoard.rows" :key="rowIndex">
                         <game-tile v-for="(val, columnIndex) in gameBoard.columns" :row="rowIndex" :column="columnIndex" :gameBoard="gameBoard" :key="columnIndex"></game-tile>
                     </div>
                     <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="'unit' + unit.id"></unit>
                 </div>
-
                 <game-ui :units="units" :game-duration="game.timer" :game-in-progress="gameInProgress"></game-ui>
-
-                <!--
-                <div style="position: absolute; bottom: 0">
-                    <timer v-if="gameInProgress" :game-duration="game.timer"/>
-                    <unit-controls v-for="unit in units" :unit="unit" :key="'control' + unit.id"></unit-controls>
-                </div>
-                -->
-
                 <div :style="overlayStyle" v-if="!gameInProgress" v-on:click="createGame()">
                     <h1 v-if="game.state === 'win'">You won!</h1>
                     <h1 v-if="game.state === 'lose'">You lost!</h1>
@@ -77,7 +68,7 @@ export default {
     },
     methods: {
         setScale() {
-            this.scale = Math.min((window.innerWidth / 1070), (window.innerHeight / 1920))
+            this.scale = Math.min((window.innerWidth / 1080), (window.innerHeight / 1920))
         },
         createGame() {
             if (!this.creatingGame) {
@@ -103,7 +94,7 @@ export default {
         },
         contentStyle () {
             return {
-                'width': '1070px',
+                'width': '1080px',
                 'height': '1920px',
                 'transform': `translate(-50%, -50%) scale(${this.scale})`,
                 'position': 'relative',
