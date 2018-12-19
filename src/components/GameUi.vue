@@ -81,10 +81,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .game-ui {
-        position: absolute;
-        bottom: 0;
-        width: 1080px;
-        height: 291px;
-    }
 </style>

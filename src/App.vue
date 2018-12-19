@@ -2,12 +2,16 @@
     <div id="app">
         <div id="content-scaler" :style="scalerStyle">
             <div :style="contentStyle">
-                <img src="./assets/pup_bg.png" style="position: absolute; width: 1440px; left: -185px; top: -400px" />
+                <img src="./assets/pup_bg.png" style="position: absolute; width: 1440px; left: -185px; top: -460px" />
                 <div :style="boardStyle">
                     <div class="row" v-for="(val, rowIndex) in gameBoard.rows" :key="rowIndex">
                         <game-tile v-for="(val, columnIndex) in gameBoard.columns" :row="rowIndex" :column="columnIndex" :gameBoard="gameBoard" :key="columnIndex"></game-tile>
                     </div>
                     <unit v-for="unit in units" :unit="unit" :tileSize="gameBoard.tileSize" :key="'unit' + unit.id"></unit>
+                </div>
+                <div class="dogs">
+                    <dog-sprite></dog-sprite>
+                    <dog-sprite></dog-sprite>
                 </div>
                 <game-ui :units="units" :game-duration="game.timer" :game-in-progress="gameInProgress"></game-ui>
                 <div :style="overlayStyle" v-if="!gameInProgress" v-on:click="createGame()">
@@ -31,6 +35,7 @@ import { mapMutations } from 'vuex'
 import mapConversions from './mixins/MapConversions.js'
 import GameTile from './components/GameTile.vue'
 import Unit from './components/Unit.vue'
+import DogSprite from './components/DogSprite.vue'
 import GameUi from './components/GameUi.vue'
 import Lobby from './components/Lobby.vue'
 
@@ -39,6 +44,7 @@ export default {
     components: {
         GameTile,
         Unit,
+        DogSprite,
         GameUi,
         Lobby
     },
@@ -168,5 +174,21 @@ body, html {
 }
 #content-scaler  {
     position: relative;
+}
+.dogs {
+    position: absolute;
+    bottom: 300px;
+    left: 50%;
+    transform: translate(-50%) scale(2);
+    transform-origin: bottom;
+}
+.dogs div:first-child {
+    margin-right: 100px;
+}
+.game-ui {
+    position: absolute;
+    bottom: 0;
+    width: 1080px;
+    height: 291px;
 }
 </style>
