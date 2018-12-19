@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <button v-if="userHasControl('up')" v-on:click="moveUnitRequest('up')" :style="style" :disabled="!gameInProgress">&#9650;</button>
-        <button v-if="userHasControl('down')" v-on:click="moveUnitRequest('down')" :style="style" :disabled="!gameInProgress">&#9660;</button>
-        <button v-if="userHasControl('left')" v-on:click="moveUnitRequest('left')" :style="style" :disabled="!gameInProgress">&#9668;</button>
-        <button v-if="userHasControl('right')" v-on:click="moveUnitRequest('right')" :style="style" :disabled="!gameInProgress">&#9658;</button>
+    <div class="unitControl">
+        <div v-if="userHasControl('up')" v-on:click="moveUnitRequest('up')" class="button" :style="style('up')" :disabled="!gameInProgress"></div>
+        <div v-if="userHasControl('down')" v-on:click="moveUnitRequest('down')" class="button" :style="style('down')" :disabled="!gameInProgress"></div>
+        <div v-if="userHasControl('left')" v-on:click="moveUnitRequest('left')" class="button" :style="style('left')" :disabled="!gameInProgress"></div>
+        <div v-if="userHasControl('right')" v-on:click="moveUnitRequest('right')" class="button" :style="style('right')" :disabled="!gameInProgress"></div>
     </div>
 </template>
 
@@ -19,19 +19,30 @@ export default {
             this.$store.dispatch('moveUnit', { unit: this.unit, direction })
                 .then(this.$store.dispatch('updateGameState'))
         },
-    },
-    computed: {
-        style() {
+        style(direction) {
+            let positions = {
+                left1: '-511px -294px',
+                right1: '-749px -294px',
+                down1: '-988px -294px',
+                up1: '-511px -411px',
+                left2: '-749px -411px',
+                right2: '-988px -411px',
+                down2: '0px -527px',
+                up2: '-238px -527px',
+            }
+            let position = positions[direction + this.unit.id]
+            let backgroundPosition = position ? position : '0 0'
             return  {
-                'width': '260px',
-                'height': '120px',
-                'margin': '3px',
-                'background-color': this.unit.color,
-                'border': '2px solid black',
-                'font-size': '60px',
-                'touch-action': 'manipulation',
+                display: 'inline-block',
+                width: '237px',
+                height: '116px',
+                backgroundImage: `url(${require('../assets/ui_spritesheet.png')})`,
+                backgroundPosition: backgroundPosition,
+                touchAction: 'manipulation',
             }
         },
+    },
+    computed: {
        ...mapGetters({
            gameInProgress: 'gameInProgress'
        }),
@@ -43,4 +54,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .unitControl div:first-child {
+        margin-right: 34px;
+    }
+    .unitControl div {
+        margin-bottom: 11px;
+    }
 </style>
