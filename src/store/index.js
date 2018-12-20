@@ -74,8 +74,8 @@ export default new Vuex.Store({
             payload.unit.row = payload.row
             payload.unit.column = payload.column
         },
-        updatePlayerReady (state, playerId) {
-            state.players[playerId - 1].ready = 1
+        updatePlayerReady (state, payload) {
+            state.players[payload.playerId - 1].ready = payload.readyFlag
         },
     },
     actions: {
@@ -145,14 +145,14 @@ export default new Vuex.Store({
         loseGame ({commit}) {
             commit('updateGameState', 'lose')
         },
-        readyPlayer ({commit, state}, payload) {
-            commit('updatePlayerReady', payload.playerId)
+        updateReadyPlayer ({commit, state}, payload) {
+            commit('updatePlayerReady', payload)
 
             // DRY this up
             db.collection('games').doc(state.game.id).update({playerInfo: state.players})
             // eslint-disable-next-line
             .catch((error) => console.error('Error players ready ', error))
-        },  
+        },
         moveUnit ({ commit, state, getters }, payload) {
             let target = {}
             let wall = {}
