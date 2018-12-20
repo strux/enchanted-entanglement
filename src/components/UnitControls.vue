@@ -1,9 +1,9 @@
 <template>
     <div class="unitControl">
-        <div v-if="userHasControl('up')" v-on:click="moveUnitRequest('up')" class="button" :style="style('up')" :disabled="!gameInProgress"></div>
-        <div v-if="userHasControl('down')" v-on:click="moveUnitRequest('down')" class="button" :style="style('down')" :disabled="!gameInProgress"></div>
-        <div v-if="userHasControl('left')" v-on:click="moveUnitRequest('left')" class="button" :style="style('left')" :disabled="!gameInProgress"></div>
-        <div v-if="userHasControl('right')" v-on:click="moveUnitRequest('right')" class="button" :style="style('right')" :disabled="!gameInProgress"></div>
+        <div v-if="userHasControl('up')" @touchstart="mouseDown" @touchend="mouseUp" @mousedown="mouseDown" @mouseup="mouseUp" v-on:click="moveUnitRequest('up')" class="button" :style="style('up')" :disabled="!gameInProgress"></div>
+        <div v-if="userHasControl('down')" @touchstart="mouseDown" @touchend="mouseUp" @mousedown="mouseDown" @mouseup="mouseUp" v-on:click="moveUnitRequest('down')" class="button" :style="style('down')" :disabled="!gameInProgress"></div>
+        <div v-if="userHasControl('left')" @touchstart="mouseDown" @touchend="mouseUp" @mousedown="mouseDown" @mouseup="mouseUp" v-on:click="moveUnitRequest('left')" class="button" :style="style('left')" :disabled="!gameInProgress"></div>
+        <div v-if="userHasControl('right')" @touchstart="mouseDown" @touchend="mouseUp" @mousedown="mouseDown" @mouseup="mouseUp" v-on:click="moveUnitRequest('right')" class="button" :style="style('right')" :disabled="!gameInProgress"></div>
     </div>
 </template>
 
@@ -18,6 +18,12 @@ export default {
         moveUnitRequest(direction) {
             this.$store.dispatch('moveUnit', { unit: this.unit, direction })
                 .then(this.$store.dispatch('updateGameState'))
+        },
+        mouseDown(event) {
+            event.target.style.transform = 'scale(1.1)'
+        },
+        mouseUp(event) {
+            event.target.style.transform = 'scale(1)'
         },
         style(direction) {
             let positions = {
